@@ -19,6 +19,8 @@ This document lays out the current public properties and methods for the React N
 - [`onHttpError`](Reference.md#onhttperror)
 - [`onMessage`](Reference.md#onmessage)
 - [`onNavigationStateChange`](Reference.md#onnavigationstatechange)
+- [`onRetractBarsRecommendation`](Reference.md#onretractbarsrecommendation)
+- [`onScroll`](Reference.md#onscroll)
 - [`onContentProcessDidTerminate`](Reference.md#oncontentprocessdidterminate)
 - [`originWhitelist`](Reference.md#originwhitelist)
 - [`renderError`](Reference.md#rendererror)
@@ -43,6 +45,8 @@ This document lays out the current public properties and methods for the React N
 - [`contentInset`](Reference.md#contentinset)
 - [`contentInsetAdjustmentBehavior`](Reference.md#contentInsetAdjustmentBehavior)
 - [`dataDetectorTypes`](Reference.md#datadetectortypes)
+- [`barsAreRetractedOrRetracting`](Reference.md#barsAreRetractedOrRetracting)
+- [`revealBarsWithoutScrollingToTopOnFirstTapOfStatusBar`](Reference.md#revealBarsWithoutScrollingToTopOnFirstTapOfStatusBar)
 - [`scrollEnabled`](Reference.md#scrollenabled)
 - [`directionalLockEnabled`](Reference.md#directionalLockEnabled)
 - [`geolocationEnabled`](Reference.md#geolocationenabled)
@@ -505,6 +509,76 @@ Note that this method will not be invoked on hash URL changes (e.g. from `https:
 
 ---
 
+### `onRetractBarsRecommendation`
+
+Function that is invoked when the `WebView` scrolls such that any retractible navigation bars or toolbars should be retracted.
+
+| Type     | Required | Availability |
+| -------- | -------- | -------- |
+| function | No       | iOS      |
+
+Example:
+
+```jsx
+<WebView
+  source={{ uri: 'https://facebook.github.io/react-native' }}
+  onRetractBarsRecommendation={syntheticEvent => {
+    const {
+      recommendation
+    } = syntheticEvent;
+  }}
+/>
+```
+
+The `syntheticEvent` object includes these properties:
+
+```
+recommendation ("retract" or "reveal")
+```
+
+---
+
+### `onScroll`
+
+Function that is invoked when the `WebView` scrolls.
+
+| Type     | Required |
+| -------- | -------- |
+| function | No       |
+
+Example:
+
+```jsx
+<WebView
+  source={{ uri: 'https://facebook.github.io/react-native' }}
+  onScroll={syntheticEvent => {
+    const {
+      contentOffset,
+      contentInset,
+      contentSize,
+      layoutMeasurement,
+      zoomScale,
+      panGestureTranslation,
+      scrollViewIsDragging,
+    } = syntheticEvent;
+  }}
+/>
+```
+
+The `syntheticEvent` object includes these properties:
+
+```
+contentOffset,
+contentInset,
+contentSize,
+layoutMeasurement,
+zoomScale,
+panGestureTranslation,
+scrollViewIsDragging,
+```
+
+---
+
 ### `onContentProcessDidTerminate`
 
 Function that is invoked when the `WebView` content process is terminated.
@@ -893,6 +967,24 @@ Possible values for `dataDetectorTypes` are:
 | string, or array | No       | iOS      |
 
 ---
+
+### `barsAreRetractedOrRetracting`
+
+Boolean value that informs `revealBarsWithoutScrollingToTopOnFirstTapOfStatusBar` what the current retraction state (`true` if "retracted" or "retracting"; `false` otherwise) of any bars (e.g. navigation bar and toolbar) associated with the `WebView` is. Defaults to `false`, meaning that `revealBarsWithoutScrollingToTopOnFirstTapOfStatusBar` will simply fall back to its default behaviour of scrolling to the top upon any tap of a view at the top of the `WebView` (usually a UIStatusBar).
+
+| Type | Required | Platform |
+| ---- | -------- | -------- |
+| bool | No       | iOS      |
+
+### `revealBarsWithoutScrollingToTopOnFirstTapOfStatusBar`
+
+Boolean value that determines whether, upon tapping a view at the top of the `WebView` (usually a UIStatusBar), it should reveal its associated bars (e.g. navigation bar and toolbar) and suppress scrolling to the top (if `true`), rather than immediately scrolling to the top (if `false` - default).
+
+This property will only take any effect if `barsAreRetractedOrRetracting` is updated to `true` or `false` at the corresponding moments that any bars associated with the webView are in a "retracted" or "retracting" state.
+
+| Type | Required | Platform |
+| ---- | -------- | -------- |
+| bool | No       | iOS      |
 
 ### `scrollEnabled`
 

@@ -131,6 +131,7 @@ export type WebViewErrorEvent = NativeSyntheticEvent<WebViewError>;
 export type WebViewTerminatedEvent = NativeSyntheticEvent<WebViewNativeEvent>;
 
 export type WebViewHttpErrorEvent = NativeSyntheticEvent<WebViewHttpError>;
+export type RetractBarsRecommendationEvent = { recommendation: "retract"|"reveal" };
 
 export type DataDetectorTypes =
   | 'phoneNumber'
@@ -276,10 +277,13 @@ export interface IOSNativeWebViewProps extends CommonNativeWebViewProps {
   directionalLockEnabled?: boolean;
   hideKeyboardAccessoryView?: boolean;
   pagingEnabled?: boolean;
+  barsAreRetractedOrRetracting?: boolean;
+  revealBarsWithoutScrollingToTopOnFirstTapOfStatusBar?: boolean;
   scrollEnabled?: boolean;
   useSharedProcessPool?: boolean;
   onContentProcessDidTerminate?: (event: WebViewTerminatedEvent) => void;
   onLoadingCommit?: (event: WebViewNavigationEvent) => void;
+  onRetractBarsRecommendation?: (event: RetractBarsRecommendationEvent }) => void;
 }
 
 export interface IOSWebViewProps extends WebViewSharedProps {
@@ -307,6 +311,38 @@ export interface IOSWebViewProps extends WebViewSharedProps {
    * @platform ios
    */
   decelerationRate?: DecelerationRateConstant | number;
+
+  /**
+   * Boolean value that informs
+   * `revealBarsWithoutScrollingToTopOnFirstTapOfStatusBar` what the current
+   * retraction state (`true` if "retracted" or "retracting"; `false`
+   * otherwise) of any bars (e.g. navigation bar and toolbar) associated with
+   * the `WebView` is. Defaults to `false`, meaning that
+   * `revealBarsWithoutScrollingToTopOnFirstTapOfStatusBar` will simply fall
+   * back to its default behaviour of scrolling to the top upon any tap of a
+   * view at the top of the `WebView` (usually a UIStatusBar).
+   *
+   * The default value is `false`.
+   * @platform ios
+   */
+  barsAreRetractedOrRetracting?: boolean;
+
+  /**
+   * Boolean value that determines whether, upon tapping a view at the top of
+   * the `WebView` (usually a UIStatusBar), it should reveal its associated
+   * bars (e.g. navigation bar and toolbar) and suppress scrolling to the top
+   * (if `true`), rather than immediately scrolling to the top (if `false` -
+   * default).
+   * 
+   * This property will only take any effect if `barsAreRetractedOrRetracting`
+   * is updated to `true` or `false` at the corresponding moments that any
+   * bars associated with the webView are in a "retracted" or "retracting"
+   * state.
+   *
+   * The default value is `false`.
+   * @platform ios
+   */
+  revealBarsWithoutScrollingToTopOnFirstTapOfStatusBar?: boolean;
 
   /**
    * Boolean value that determines whether scrolling is enabled in the
@@ -466,6 +502,13 @@ export interface IOSWebViewProps extends WebViewSharedProps {
    * @platform ios
    */
   onLoadCommit: (event: WebViewNavigationEvent) => void;
+
+  /**
+   * Function that is invoked when the `WebView` scrolls such that any retractible navigation
+   * bars or toolbars should be retracted.
+   * @platform ios
+   */
+  onRetractBarsRecommendation?: (event: RetractBarsRecommendationEvent }) => void;
 }
 
 export interface AndroidWebViewProps extends WebViewSharedProps {

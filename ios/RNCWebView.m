@@ -47,9 +47,11 @@ static NSDictionary* customCertificatesForHost;
 @property (nonatomic, copy) RCTDirectEventBlock onLoadingError;
 @property (nonatomic, copy) RCTDirectEventBlock onLoadingProgress;
 @property (nonatomic, copy) RCTDirectEventBlock onShouldStartLoadWithRequest;
+@property (nonatomic, copy) RCTDirectEventBlock onScrollViewWillBeginDecelerating;
 @property (nonatomic, copy) RCTDirectEventBlock onHttpError;
 @property (nonatomic, copy) RCTDirectEventBlock onMessage;
 @property (nonatomic, copy) RCTDirectEventBlock onScroll;
+@property (nonatomic, copy) RCTDirectEventBlock onRetractBarsRecommendation;
 @property (nonatomic, copy) RCTDirectEventBlock onContentProcessDidTerminate;
 @property (nonatomic, copy) WKWebView *webView;
 @end
@@ -77,6 +79,8 @@ static NSDictionary* customCertificatesForHost;
     super.backgroundColor = [UIColor clearColor];
     _bounces = YES;
     _scrollEnabled = YES;
+    _barsAreRetractedOrRetracting = NO;
+    _revealBarsWithoutScrollingToTopOnFirstTapOfStatusBar = NO;
     _showsHorizontalScrollIndicator = YES;
     _showsVerticalScrollIndicator = YES;
     _directionalLockEnabled = YES;
@@ -641,8 +645,13 @@ static NSDictionary* customCertificatesForHost;
   // Don't allow scrolling the scrollView.
   if (!_scrollEnabled) {
     scrollView.bounds = _webView.bounds;
+    return;
   }
-  else if (_onScroll != nil) {
+  if(_onScroll == nil && _onRetractBarsRecommendation == nil){
+    return;
+  }
+  CGPoint translation = [scrollView.panGestureRecognizer translationInView:scrollView];
+  if (_onScroll != nil) {
     NSDictionary *event = @{
       @"contentOffset": @{
           @"x": @(scrollView.contentOffset.x),
@@ -663,9 +672,78 @@ static NSDictionary* customCertificatesForHost;
           @"height": @(scrollView.frame.size.height)
           },
       @"zoomScale": @(scrollView.zoomScale ?: 1),
+      @"panGestureTranslation": @{
+          @"x": @(translation.x),
+          @"y": @(translation.y)
+          },
+      @"scrollViewIsDragging": @(scrollView.isDragging),
       };
     _onScroll(event);
   }
+  if(_onRetractBarsRecommendation != nil && translation.y < 0 && scrollView.isDragging){
+    NSDictionary *event = @{
+        @"recommendation": @"retract",
+    };
+    _onRetractBarsRecommendation(event);
+  }
+}
+
+- (void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView
+{
+    if(_onScrollViewWillBeginDecelerating == nil && _onRetractBarsRecommendation == nil){
+        return;
+    }
+    CGPoint translation = [scrollView.panGestureRecognizer translationInView:scrollView];
+    if(_onScrollViewWillBeginDecelerating){
+        NSDictionary *event = @{
+          @"contentOffset": @{
+              @"x": @(scrollView.contentOffset.x),
+              @"y": @(scrollView.contentOffset.y)
+              },
+          @"contentInset": @{
+              @"top": @(scrollView.contentInset.top),
+              @"left": @(scrollView.contentInset.left),
+              @"bottom": @(scrollView.contentInset.bottom),
+              @"right": @(scrollView.contentInset.right)
+              },
+          @"contentSize": @{
+              @"width": @(scrollView.contentSize.width),
+              @"height": @(scrollView.contentSize.height)
+              },
+          @"layoutMeasurement": @{
+              @"width": @(scrollView.frame.size.width),
+              @"height": @(scrollView.frame.size.height)
+              },
+          @"zoomScale": @(scrollView.zoomScale ?: 1),
+          @"panGestureTranslation": @{
+              @"x": @(translation.x),
+              @"y": @(translation.y)
+              },
+          @"scrollViewIsDragging": @(scrollView.isDragging),
+        };
+        _onScrollViewWillBeginDecelerating(event);
+    }
+    if(_onRetractBarsRecommendation){
+        NSDictionary *event = @{
+            @"recommendation": translation.y <= 0 ? @"retract" : @"reveal",
+        };
+        _onRetractBarsRecommendation(event);
+    }
+}
+
+- (BOOL)scrollViewShouldScrollToTop:(UIScrollView *)scrollView {
+    /* On first tap of status bar, by default, we prevent scrolling to top – just recommend to reveal bars. */
+    if(_barsAreRetractedOrRetracting && _revealBarsWithoutScrollingToTopOnFirstTapOfStatusBar){
+        if(_onRetractBarsRecommendation != nil){
+            NSDictionary *event = @{
+                @"recommendation": @"reveal",
+            };
+            _onRetractBarsRecommendation(event);
+        }
+        return false;
+    }
+    
+    return true;
 }
 
 - (void)setDirectionalLockEnabled:(BOOL)directionalLockEnabled
