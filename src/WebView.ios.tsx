@@ -216,6 +216,14 @@ class WebView extends React.Component<IOSWebViewProps, State> {
     }
   }
 
+  onLoadingCommit = (event: WebViewNavigationEvent) => {
+    const { onLoadCommit } = this.props;
+    if (onLoadCommit) {
+      onLoadCommit(event);
+    }
+    this.updateNavigationState(event);
+  };
+
   onLoadingFinish = (event: WebViewNavigationEvent) => {
     const { onLoad, onLoadEnd } = this.props;
     if (onLoad) {
@@ -336,6 +344,7 @@ class WebView extends React.Component<IOSWebViewProps, State> {
         decelerationRate={decelerationRate}
         messagingEnabled={typeof onMessage === 'function'}
         onLoadingError={this.onLoadingError}
+        onLoadingCommit={this.onLoadingCommit}
         onLoadingFinish={this.onLoadingFinish}
         onLoadingProgress={this.onLoadingProgress}
         onLoadingStart={this.onLoadingStart}

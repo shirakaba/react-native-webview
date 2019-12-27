@@ -279,6 +279,7 @@ export interface IOSNativeWebViewProps extends CommonNativeWebViewProps {
   scrollEnabled?: boolean;
   useSharedProcessPool?: boolean;
   onContentProcessDidTerminate?: (event: WebViewTerminatedEvent) => void;
+  onLoadingCommit?: (event: WebViewNavigationEvent) => void;
 }
 
 export interface IOSWebViewProps extends WebViewSharedProps {
@@ -458,6 +459,13 @@ export interface IOSWebViewProps extends WebViewSharedProps {
    * @platform ios
    */
   onContentProcessDidTerminate?: (event: WebViewTerminatedEvent) => void;
+
+  /**
+   * Function that is invoked when the `WebView` begins to receive web content.
+   * @see https://developer.apple.com/documentation/webkit/wknavigationdelegate/1455635-webview
+   * @platform ios
+   */
+  onLoadCommit: (event: WebViewNavigationEvent) => void;
 }
 
 export interface AndroidWebViewProps extends WebViewSharedProps {

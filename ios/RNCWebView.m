@@ -996,6 +996,18 @@ static NSDictionary* customCertificatesForHost;
 }
 
 /**
+ * Called when the web view begins to receive web content.
+ * @see https://developer.apple.com/documentation/webkit/wknavigationdelegate/1455635-webview
+ */
+- (void)webView:(WKWebView *)webView
+  didCommitNavigation:(WKNavigation *)navigation
+{
+  if (_onLoadingCommit) {
+    _onLoadingCommit([self baseEvent]);
+  }
+}
+
+/**
  * Called when the navigation is complete.
  * @see https://fburl.com/rtys6jlb
  */
