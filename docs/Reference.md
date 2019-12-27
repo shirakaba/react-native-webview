@@ -13,6 +13,7 @@ This document lays out the current public properties and methods for the React N
 - [`onError`](Reference.md#onerror)
 - [`onLoad`](Reference.md#onload)
 - [`onLoadEnd`](Reference.md#onloadend)
+- [`onLoadCommit`](Reference.md#onloadcommit)
 - [`onLoadStart`](Reference.md#onloadstart)
 - [`onLoadProgress`](Reference.md#onloadprogress)
 - [`onHttpError`](Reference.md#onhttperror)
@@ -297,6 +298,40 @@ Example:
 ```
 
 Function passed to `onLoadEnd` is called with a SyntheticEvent wrapping a nativeEvent with these properties:
+
+```
+canGoBack
+canGoForward
+loading
+target
+title
+url
+```
+
+---
+
+### `onLoadCommit`
+
+Function that is invoked when the `WebView` load succeeds or fails.
+
+| Type     | Required |
+| -------- | -------- |
+| function | No       |
+
+Example:
+
+```jsx
+<WebView
+  source={{ uri: 'https://facebook.github.io/react-native' }}
+  onLoadCommit={syntheticEvent => {
+    // update component to be aware of loading status
+    const { nativeEvent } = syntheticEvent;
+    this.urlBarText = nativeEvent.url;
+  }}
+/>
+```
+
+Function passed to `onLoadCommit` is called with a SyntheticEvent wrapping a nativeEvent with these properties:
 
 ```
 canGoBack
