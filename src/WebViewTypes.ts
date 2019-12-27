@@ -116,6 +116,10 @@ export interface WebViewHttpError extends WebViewNativeEvent {
   statusCode: number;
 }
 
+export interface RetractBarsRecommendationEvent {
+  recommendation: "retract"|"reveal";
+}
+
 export type WebViewEvent = NativeSyntheticEvent<WebViewNativeEvent>;
 
 export type WebViewProgressEvent = NativeSyntheticEvent<
@@ -131,7 +135,6 @@ export type WebViewErrorEvent = NativeSyntheticEvent<WebViewError>;
 export type WebViewTerminatedEvent = NativeSyntheticEvent<WebViewNativeEvent>;
 
 export type WebViewHttpErrorEvent = NativeSyntheticEvent<WebViewHttpError>;
-export type RetractBarsRecommendationEvent = { recommendation: "retract"|"reveal" };
 
 export type DataDetectorTypes =
   | 'phoneNumber'
@@ -283,7 +286,7 @@ export interface IOSNativeWebViewProps extends CommonNativeWebViewProps {
   useSharedProcessPool?: boolean;
   onContentProcessDidTerminate?: (event: WebViewTerminatedEvent) => void;
   onLoadingCommit?: (event: WebViewNavigationEvent) => void;
-  onRetractBarsRecommendation?: (event: RetractBarsRecommendationEvent }) => void;
+  onRetractBarsRecommendation?: (event: RetractBarsRecommendationEvent) => void;
 }
 
 export interface IOSWebViewProps extends WebViewSharedProps {
@@ -508,7 +511,7 @@ export interface IOSWebViewProps extends WebViewSharedProps {
    * bars or toolbars should be retracted.
    * @platform ios
    */
-  onRetractBarsRecommendation?: (event: RetractBarsRecommendationEvent }) => void;
+  onRetractBarsRecommendation?: (event: RetractBarsRecommendationEvent) => void;
 }
 
 export interface AndroidWebViewProps extends WebViewSharedProps {
