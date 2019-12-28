@@ -279,6 +279,7 @@ export interface IOSNativeWebViewProps extends CommonNativeWebViewProps {
   scrollEnabled?: boolean;
   useSharedProcessPool?: boolean;
   onContentProcessDidTerminate?: (event: WebViewTerminatedEvent) => void;
+  onScrollEndDrag?: (event: NativeScrollEvent) => void;
 }
 
 export interface IOSWebViewProps extends WebViewSharedProps {
@@ -458,6 +459,11 @@ export interface IOSWebViewProps extends WebViewSharedProps {
    * @platform ios
    */
   onContentProcessDidTerminate?: (event: WebViewTerminatedEvent) => void;
+
+  /**
+   * Function that is invoked when the dragging ends on a scrolling `WebView`.
+   */
+  onScrollEndDrag?: (event: NativeScrollEvent) => void;
 }
 
 export interface AndroidWebViewProps extends WebViewSharedProps {

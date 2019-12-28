@@ -18,6 +18,7 @@ This document lays out the current public properties and methods for the React N
 - [`onHttpError`](Reference.md#onhttperror)
 - [`onMessage`](Reference.md#onmessage)
 - [`onNavigationStateChange`](Reference.md#onnavigationstatechange)
+- [`onScrollEndDrag`](Reference.md#onscrollenddrag)
 - [`onContentProcessDidTerminate`](Reference.md#oncontentprocessdidterminate)
 - [`originWhitelist`](Reference.md#originwhitelist)
 - [`renderError`](Reference.md#rendererror)
@@ -467,6 +468,44 @@ url
 ```
 
 Note that this method will not be invoked on hash URL changes (e.g. from `https://example.com/users#list` to `https://example.com/users#help`). There is a workaround for this that is described [in the Guide](Guide.md#intercepting-hash-url-changes).
+
+---
+
+### `onScrollEndDrag`
+
+Function that is invoked when the dragging ends on a scrolling `WebView`.
+
+| Type     | Required | Platform |
+| -------- | -------- | -------- |
+| function | No       | iOS |
+
+Example:
+
+```jsx
+<WebView
+  source={{ uri: 'https://facebook.github.io/react-native' }}
+  onScroll={syntheticEvent => {
+    const {
+      contentOffset,
+      contentInset,
+      contentSize,
+      layoutMeasurement,
+      zoomScale,
+    } = syntheticEvent.nativeEvent;
+  }}
+/>
+```
+
+The `syntheticEvent.nativeEvent` object includes these properties:
+
+```
+contentOffset,
+contentInset,
+contentSize,
+layoutMeasurement,
+zoomScale,
+```
+
 
 ---
 
