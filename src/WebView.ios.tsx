@@ -351,6 +351,7 @@ class WebView extends React.Component<IOSWebViewProps, State> {
         onHttpError={this.onHttpError}
         onMessage={this.onMessage}
         onScroll={this.props.onScroll}
+        onScrollEndDrag={this.props.onScrollEndDrag}
         onRetractBarsRecommendation={this.props.onRetractBarsRecommendation}
         onShouldStartLoadWithRequest={onShouldStartLoadWithRequest}
         onContentProcessDidTerminate={this.onContentProcessDidTerminate}

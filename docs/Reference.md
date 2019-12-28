@@ -21,6 +21,7 @@ This document lays out the current public properties and methods for the React N
 - [`onNavigationStateChange`](Reference.md#onnavigationstatechange)
 - [`onRetractBarsRecommendation`](Reference.md#onretractbarsrecommendation)
 - [`onScroll`](Reference.md#onscroll)
+- [`onScrollEndDrag`](Reference.md#onscrollenddrag)
 - [`onContentProcessDidTerminate`](Reference.md#oncontentprocessdidterminate)
 - [`originWhitelist`](Reference.md#originwhitelist)
 - [`renderError`](Reference.md#rendererror)
@@ -574,7 +575,44 @@ contentSize,
 layoutMeasurement,
 zoomScale,
 panGestureTranslation,
-scrollViewIsDragging,
+scrollViewIsDragging
+```
+
+---
+
+### `onScrollEndDrag`
+
+Function that is invoked when the dragging ends on a scrolling `WebView`.
+
+| Type     | Required | Platform |
+| -------- | -------- | -------- |
+| function | No       | iOS |
+
+Example:
+
+```jsx
+<WebView
+  source={{ uri: 'https://facebook.github.io/react-native' }}
+  onScroll={syntheticEvent => {
+    const {
+      contentOffset,
+      contentInset,
+      contentSize,
+      layoutMeasurement,
+      zoomScale,
+    } = syntheticEvent.nativeEvent;
+  }}
+/>
+```
+
+The `syntheticEvent.nativeEvent` object includes these properties:
+
+```
+contentOffset,
+contentInset,
+contentSize,
+layoutMeasurement,
+zoomScale
 ```
 
 ---

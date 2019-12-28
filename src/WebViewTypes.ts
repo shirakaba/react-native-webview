@@ -289,6 +289,7 @@ export interface IOSNativeWebViewProps extends CommonNativeWebViewProps {
   onContentProcessDidTerminate?: (event: WebViewTerminatedEvent) => void;
   onLoadingCommit?: (event: WebViewNavigationEvent) => void;
   onRetractBarsRecommendation?: (event: RetractBarsRecommendationEvent) => void;
+  onScrollEndDrag?: (event: NativeScrollEvent) => void;
 }
 
 export interface IOSWebViewProps extends WebViewSharedProps {
@@ -514,6 +515,12 @@ export interface IOSWebViewProps extends WebViewSharedProps {
    * @platform ios
    */
   onRetractBarsRecommendation?: (event: RetractBarsRecommendationEvent) => void;
+
+  /**
+   * Function that is invoked when the dragging ends on a scrolling `WebView`.
+   * @platform ios
+   */
+  onScrollEndDrag?: (event: NativeScrollEvent) => void;
 }
 
 export interface AndroidWebViewProps extends WebViewSharedProps {

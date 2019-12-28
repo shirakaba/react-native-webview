@@ -50,8 +50,9 @@ static NSDictionary* customCertificatesForHost;
 @property (nonatomic, copy) RCTDirectEventBlock onScrollViewWillBeginDecelerating;
 @property (nonatomic, copy) RCTDirectEventBlock onHttpError;
 @property (nonatomic, copy) RCTDirectEventBlock onMessage;
-@property (nonatomic, copy) RCTDirectEventBlock onScroll;
 @property (nonatomic, copy) RCTDirectEventBlock onRetractBarsRecommendation;
+@property (nonatomic, copy) RCTDirectEventBlock onScroll;
+@property (nonatomic, copy) RCTDirectEventBlock onScrollEndDrag;
 @property (nonatomic, copy) RCTDirectEventBlock onContentProcessDidTerminate;
 @property (nonatomic, copy) WKWebView *webView;
 @end
@@ -745,6 +746,75 @@ static NSDictionary* customCertificatesForHost;
     
     return true;
 }
+
+- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset
+{
+    if(_onScrollEndDrag != nil){
+        NSDictionary *event = @{
+          @"contentOffset": @{
+              @"x": @(scrollView.contentOffset.x),
+              @"y": @(scrollView.contentOffset.y)
+              },
+          @"contentInset": @{
+              @"top": @(scrollView.contentInset.top),
+              @"left": @(scrollView.contentInset.left),
+              @"bottom": @(scrollView.contentInset.bottom),
+              @"right": @(scrollView.contentInset.right)
+              },
+          @"contentSize": @{
+              @"width": @(scrollView.contentSize.width),
+              @"height": @(scrollView.contentSize.height)
+              },
+          @"layoutMeasurement": @{
+              @"width": @(scrollView.frame.size.width),
+              @"height": @(scrollView.frame.size.height)
+              },
+          @"zoomScale": @(scrollView.zoomScale ?: 1),
+          // userData
+          @"velocity": @{
+            @"x": @(velocity.x),
+            @"y": @(velocity.y)
+          },
+          @"targetContentOffset": @{
+            @"x": @(targetContentOffset->x),
+            @"y": @(targetContentOffset->y)
+          }
+        };
+        
+        // https://github.com/facebook/react-native/blob/7a4753d76aab1c52a09f26ec6f7fd43a68da8a97/React/Views/ScrollView/RCTScrollView.m#L771-L781
+        _onScrollEndDrag(event);
+    }
+}
+
+- (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(CGFloat)scale
+{
+    if(_onScrollEndDrag != nil){
+        // https://github.com/facebook/react-native/blob/7a4753d76aab1c52a09f26ec6f7fd43a68da8a97/React/Views/ScrollView/RCTScrollView.m#L798
+        NSDictionary *event = @{
+          @"contentOffset": @{
+              @"x": @(scrollView.contentOffset.x),
+              @"y": @(scrollView.contentOffset.y)
+              },
+          @"contentInset": @{
+              @"top": @(scrollView.contentInset.top),
+              @"left": @(scrollView.contentInset.left),
+              @"bottom": @(scrollView.contentInset.bottom),
+              @"right": @(scrollView.contentInset.right)
+              },
+          @"contentSize": @{
+              @"width": @(scrollView.contentSize.width),
+              @"height": @(scrollView.contentSize.height)
+              },
+          @"layoutMeasurement": @{
+              @"width": @(scrollView.frame.size.width),
+              @"height": @(scrollView.frame.size.height)
+              },
+          @"zoomScale": @(scrollView.zoomScale ?: 1),
+        };
+        _onScrollEndDrag(event);
+    }
+}
+
 
 - (void)setDirectionalLockEnabled:(BOOL)directionalLockEnabled
 {
