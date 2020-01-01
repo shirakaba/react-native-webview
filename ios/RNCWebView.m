@@ -642,6 +642,9 @@ static NSDictionary* customCertificatesForHost;
     scrollView.bounds = _webView.bounds;
   }
   else if (_onScroll != nil) {
+    CGPoint translationInScrollView = [scrollView.panGestureRecognizer translationInView:scrollView];
+    CGPoint translationInWebView = [scrollView.panGestureRecognizer translationInView:self.webView];
+    
     NSDictionary *event = @{
       @"contentOffset": @{
           @"x": @(scrollView.contentOffset.x),
@@ -662,6 +665,14 @@ static NSDictionary* customCertificatesForHost;
           @"height": @(scrollView.frame.size.height)
           },
       @"zoomScale": @(scrollView.zoomScale ?: 1),
+      @"panGestureTranslationInScrollView": @{
+          @"x": @(translationInScrollView.x),
+          @"y": @(translationInScrollView.y)
+          },
+      @"panGestureTranslationInWebView": @{
+          @"x": @(translationInWebView.x),
+          @"y": @(translationInWebView.y)
+          },
       };
     _onScroll(event);
   }
