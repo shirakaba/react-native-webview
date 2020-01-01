@@ -737,7 +737,7 @@ static NSDictionary* customCertificatesForHost;
     }
     if(_onRetractBarsRecommendation){
         NSDictionary *event = @{
-            @"recommendation": translation.y <= 0 ? @"retract" : @"reveal",
+            @"recommendation": translationInScrollView.y <= 0 ? @"retract" : @"reveal",
         };
         _onRetractBarsRecommendation(event);
     }
