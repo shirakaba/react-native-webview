@@ -559,7 +559,8 @@ Example:
       contentSize,
       layoutMeasurement,
       zoomScale,
-      panGestureTranslation,
+      panGestureTranslationInScrollView,
+      panGestureTranslationInWebView,
       scrollViewIsDragging,
     } = syntheticEvent.nativeEvent;
   }}
@@ -574,7 +575,8 @@ contentInset,
 contentSize,
 layoutMeasurement,
 zoomScale,
-panGestureTranslation,
+panGestureTranslationInScrollView (iOS),
+panGestureTranslationInWebView (iOS),
 scrollViewIsDragging
 ```
 
@@ -600,6 +602,8 @@ Example:
       contentSize,
       layoutMeasurement,
       zoomScale,
+      panGestureTranslationInScrollView,
+      panGestureTranslationInWebView,
     } = syntheticEvent.nativeEvent;
   }}
 />
@@ -612,7 +616,9 @@ contentOffset,
 contentInset,
 contentSize,
 layoutMeasurement,
-zoomScale
+zoomScale,
+panGestureTranslationInScrollView (iOS),
+panGestureTranslationInWebView (iOS),
 ```
 
 ---

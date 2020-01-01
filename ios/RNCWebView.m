@@ -651,8 +651,10 @@ static NSDictionary* customCertificatesForHost;
   if(_onScroll == nil && _onRetractBarsRecommendation == nil){
     return;
   }
-  CGPoint translation = [scrollView.panGestureRecognizer translationInView:scrollView];
+  CGPoint translationInScrollView = [scrollView.panGestureRecognizer translationInView:scrollView];
   if (_onScroll != nil) {
+    CGPoint translationInWebView = [scrollView.panGestureRecognizer translationInView:self.webView];
+    
     NSDictionary *event = @{
       @"contentOffset": @{
           @"x": @(scrollView.contentOffset.x),
@@ -673,15 +675,19 @@ static NSDictionary* customCertificatesForHost;
           @"height": @(scrollView.frame.size.height)
           },
       @"zoomScale": @(scrollView.zoomScale ?: 1),
-      @"panGestureTranslation": @{
-          @"x": @(translation.x),
-          @"y": @(translation.y)
-          },
       @"scrollViewIsDragging": @(scrollView.isDragging),
+      @"panGestureTranslationInScrollView": @{
+          @"x": @(translationInScrollView.x),
+          @"y": @(translationInScrollView.y)
+          },
+      @"panGestureTranslationInWebView": @{
+          @"x": @(translationInWebView.x),
+          @"y": @(translationInWebView.y)
+          },
       };
     _onScroll(event);
   }
-  if(_onRetractBarsRecommendation != nil && translation.y < 0 && scrollView.isDragging){
+  if(_onRetractBarsRecommendation != nil && translationInScrollView.y < 0 && scrollView.isDragging){
     NSDictionary *event = @{
         @"recommendation": @"retract",
     };
@@ -694,7 +700,8 @@ static NSDictionary* customCertificatesForHost;
     if(_onScrollViewWillBeginDecelerating == nil && _onRetractBarsRecommendation == nil){
         return;
     }
-    CGPoint translation = [scrollView.panGestureRecognizer translationInView:scrollView];
+    CGPoint translationInScrollView = [scrollView.panGestureRecognizer translationInView:scrollView];
+    CGPoint translationInWebView = [scrollView.panGestureRecognizer translationInView:self.webView];
     if(_onScrollViewWillBeginDecelerating){
         NSDictionary *event = @{
           @"contentOffset": @{
@@ -716,9 +723,13 @@ static NSDictionary* customCertificatesForHost;
               @"height": @(scrollView.frame.size.height)
               },
           @"zoomScale": @(scrollView.zoomScale ?: 1),
-          @"panGestureTranslation": @{
-              @"x": @(translation.x),
-              @"y": @(translation.y)
+          @"panGestureTranslationInScrollView": @{
+              @"x": @(translationInScrollView.x),
+              @"y": @(translationInScrollView.y)
+              },
+          @"panGestureTranslationInWebView": @{
+              @"x": @(translationInWebView.x),
+              @"y": @(translationInWebView.y)
               },
           @"scrollViewIsDragging": @(scrollView.isDragging),
         };
