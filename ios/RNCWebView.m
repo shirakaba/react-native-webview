@@ -635,6 +635,24 @@ static NSDictionary* customCertificatesForHost;
   _webView.scrollView.scrollEnabled = scrollEnabled;
 }
 
+/**
+  * Easier for later Android compatibility to enumerate these cases explicitly.
+  */
+- (CGFloat)getPanGestureState:(UIGestureRecognizerState)state
+{
+    switch (state) {
+        case UIGestureRecognizerStatePossible: return 0;
+        case UIGestureRecognizerStateBegan: return 1;
+        case UIGestureRecognizerStateChanged: return 2;
+        case UIGestureRecognizerStateEnded: return 3;
+        // case UIGestureRecognizerStateRecognized is a duplicate case, apparently.
+        case UIGestureRecognizerStateCancelled: return 4;
+        case UIGestureRecognizerStateFailed: return 5;
+        default:
+            return -1;
+    }
+}
+
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
   // Don't allow scrolling the scrollView.
@@ -642,6 +660,7 @@ static NSDictionary* customCertificatesForHost;
     scrollView.bounds = _webView.bounds;
   }
   else if (_onScroll != nil) {
+    CGFloat panGestureState = [self getPanGestureState:scrollView.panGestureRecognizer.state];
     NSDictionary *event = @{
       @"contentOffset": @{
           @"x": @(scrollView.contentOffset.x),
@@ -662,6 +681,7 @@ static NSDictionary* customCertificatesForHost;
           @"height": @(scrollView.frame.size.height)
           },
       @"zoomScale": @(scrollView.zoomScale ?: 1),
+      @"panGestureState": @(panGestureState),
       };
     _onScroll(event);
   }
