@@ -51,6 +51,7 @@ static NSDictionary* customCertificatesForHost;
 @property (nonatomic, copy) RCTDirectEventBlock onHttpError;
 @property (nonatomic, copy) RCTDirectEventBlock onMessage;
 @property (nonatomic, copy) RCTDirectEventBlock onRetractBarsRecommendation;
+@property (nonatomic, copy) RCTDirectEventBlock onPress;
 @property (nonatomic, copy) RCTDirectEventBlock onScroll;
 @property (nonatomic, copy) RCTDirectEventBlock onScrollEndDrag;
 @property (nonatomic, copy) RCTDirectEventBlock onContentProcessDidTerminate;
@@ -293,6 +294,8 @@ static NSDictionary* customCertificatesForHost;
 
     _webView = [[WKWebView alloc] initWithFrame:self.bounds configuration: wkWebViewConfig];
     [self setBackgroundColor: _savedBackgroundColor];
+    UITapGestureRecognizer* gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:_webView.scrollView action:@selector(onTap:)];
+    gestureRecognizer.delegate = self;
     _webView.scrollView.delegate = self;
     _webView.UIDelegate = self;
     _webView.navigationDelegate = self;
@@ -918,6 +921,40 @@ static NSDictionary* customCertificatesForHost;
         }
     }
     completionHandler(NSURLSessionAuthChallengePerformDefaultHandling, nil);
+}
+
+-(void)onTap:(UITapGestureRecognizer*)gesture
+{
+    if(_onPress == nil){
+        return;
+    }
+    if(gesture.state != UIGestureRecognizerStateEnded){
+        return;
+    }
+    
+    CGPoint viewPoint = [gesture locationInView:self.webView];
+    CGPoint scrollViewPoint = [gesture locationInView:self.webView.scrollView];
+    
+    NSDictionary *event = @{
+      @"view": @{
+          @"x": @(viewPoint.x),
+          @"y": @(viewPoint.y)
+          },
+      @"scrollView": @{
+          @"x": @(scrollViewPoint.x),
+          @"y": @(scrollViewPoint.y),
+          @"zoomScale": @(self.webView.scrollView.zoomScale)
+          }
+      };
+    _onPress(event);
+}
+
+#pragma mark - UIGestureRecognizerDelegate methods
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+    // Gesture types should be recognised simultaneously with all other possible ones
+    return true;
 }
 
 #pragma mark - WKNavigationDelegate methods

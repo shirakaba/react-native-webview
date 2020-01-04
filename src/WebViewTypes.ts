@@ -87,6 +87,18 @@ export interface ContentInsetProp {
   right?: number;
 }
 
+export interface WebViewNativePressEvent {
+  view: {
+    x: number;
+    y: number;
+  };
+  scrollView: {
+    x: number;
+    y: number;
+    zoomScale: number;
+  };
+}
+
 export interface WebViewNativeEvent {
   url: string;
   loading: boolean;
@@ -134,6 +146,7 @@ export interface WebViewHttpError extends WebViewNativeEvent {
 export interface RetractBarsRecommendation {
   recommendation: "retract"|"reveal";
 }
+export type WebViewPressEvent = NativeSyntheticEvent<WebViewNativePressEvent>;
 
 export type WebViewEvent = NativeSyntheticEvent<WebViewNativeEvent>;
 
@@ -305,6 +318,7 @@ export interface IOSNativeWebViewProps extends CommonNativeWebViewProps {
   onLoadingCommit?: (event: WebViewNavigationEvent) => void;
   onRetractBarsRecommendation?: (event: RetractBarsRecommendationEvent) => void;
   onScrollEndDrag?: (event: NativeScrollEvent) => void;
+  onPress?: (event: WebViewPressEvent) => void;
 }
 
 export interface IOSWebViewProps extends WebViewSharedProps {
@@ -536,6 +550,11 @@ export interface IOSWebViewProps extends WebViewSharedProps {
    * @platform ios
    */
   onScrollEndDrag?: (event: NativeScrollEvent) => void;
+  
+  /**
+   * Function that is invoked when the `WebView` is pressed.
+   */
+  onPress?: (event: WebViewPressEvent) => void;
 }
 
 export interface AndroidWebViewProps extends WebViewSharedProps {
