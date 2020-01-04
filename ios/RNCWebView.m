@@ -340,7 +340,7 @@ static NSDictionary* customCertificatesForHost;
         [_webView removeFromSuperview];
         _webView.scrollView.delegate = nil;
 
-        for(int i = 0; _webView.scrollView.gestureRecognizers.count; i++){
+        for(int i = 0; i < _webView.scrollView.gestureRecognizers.count; i++){
             UIGestureRecognizer* gestureRecognizer = _webView.scrollView.gestureRecognizers[i];
             [_webView.scrollView removeGestureRecognizer:gestureRecognizer];
             gestureRecognizer.delegate = nil;
