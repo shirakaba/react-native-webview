@@ -290,6 +290,7 @@ static NSDictionary* customCertificatesForHost;
     [self setBackgroundColor: _savedBackgroundColor];
     UITapGestureRecognizer* gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:_webView.scrollView action:@selector(onTap:)];
     gestureRecognizer.delegate = self;
+    [_webView.scrollView addGestureRecognizer:gestureRecognizer];
     _webView.scrollView.delegate = self;
     _webView.UIDelegate = self;
     _webView.navigationDelegate = self;
@@ -333,6 +334,12 @@ static NSDictionary* customCertificatesForHost;
         [_webView removeObserver:self forKeyPath:@"estimatedProgress"];
         [_webView removeFromSuperview];
         _webView.scrollView.delegate = nil;
+
+        for(int i = 0; _webView.scrollView.gestureRecognizers.count; i++){
+            UIGestureRecognizer* gestureRecognizer = _webView.scrollView.gestureRecognizers[i];
+            [_webView.scrollView removeGestureRecognizer:gestureRecognizer];
+            gestureRecognizer.delegate = nil;
+        }
         _webView = nil;
     }
 
