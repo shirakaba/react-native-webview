@@ -19,7 +19,6 @@ This document lays out the current public properties and methods for the React N
 - [`onHttpError`](Reference.md#onhttperror)
 - [`onMessage`](Reference.md#onmessage)
 - [`onNavigationStateChange`](Reference.md#onnavigationstatechange)
-- [`onRetractBarsRecommendation`](Reference.md#onretractbarsrecommendation)
 - [`onScroll`](Reference.md#onscroll)
 - [`onScrollEndDrag`](Reference.md#onscrollenddrag)
 - [`onContentProcessDidTerminate`](Reference.md#oncontentprocessdidterminate)
@@ -507,35 +506,6 @@ url
 ```
 
 Note that this method will not be invoked on hash URL changes (e.g. from `https://example.com/users#list` to `https://example.com/users#help`). There is a workaround for this that is described [in the Guide](Guide.md#intercepting-hash-url-changes).
-
----
-
-### `onRetractBarsRecommendation`
-
-Function that is invoked when the `WebView` scrolls such that any retractible navigation bars or toolbars should be retracted.
-
-| Type     | Required | Availability |
-| -------- | -------- | -------- |
-| function | No       | iOS      |
-
-Example:
-
-```jsx
-<WebView
-  source={{ uri: 'https://facebook.github.io/react-native' }}
-  onRetractBarsRecommendation={syntheticEvent => {
-    const {
-      recommendation
-    } = syntheticEvent;
-  }}
-/>
-```
-
-The `syntheticEvent` object includes these properties:
-
-```
-recommendation ("retract" or "reveal")
-```
 
 ---
 

@@ -143,9 +143,6 @@ export interface WebViewHttpError extends WebViewNativeEvent {
   statusCode: number;
 }
 
-export interface RetractBarsRecommendationEvent {
-  recommendation: "retract"|"reveal";
-}
 export type WebViewPressEvent = NativeSyntheticEvent<WebViewNativePressEvent>;
 
 export type WebViewEvent = NativeSyntheticEvent<WebViewNativeEvent>;
@@ -308,13 +305,11 @@ export interface IOSNativeWebViewProps extends CommonNativeWebViewProps {
   directionalLockEnabled?: boolean;
   hideKeyboardAccessoryView?: boolean;
   pagingEnabled?: boolean;
-  barsAreRetractedOrRetracting?: boolean;
   revealBarsWithoutScrollingToTopOnFirstTapOfStatusBar?: boolean;
   scrollEnabled?: boolean;
   useSharedProcessPool?: boolean;
   onContentProcessDidTerminate?: (event: WebViewTerminatedEvent) => void;
   onLoadingCommit?: (event: WebViewNavigationEvent) => void;
-  onRetractBarsRecommendation?: (event: RetractBarsRecommendationEvent) => void;
   onScrollEndDrag?: (event: NativeScrollEvent) => void;
   onPress?: (event: WebViewPressEvent) => void;
 }
@@ -535,13 +530,6 @@ export interface IOSWebViewProps extends WebViewSharedProps {
    * @platform ios
    */
   onLoadCommit: (event: WebViewNavigationEvent) => void;
-
-  /**
-   * Function that is invoked when the `WebView` scrolls such that any retractible navigation
-   * bars or toolbars should be retracted.
-   * @platform ios
-   */
-  onRetractBarsRecommendation?: (event: RetractBarsRecommendationEvent) => void;
 
   /**
    * Function that is invoked when the dragging ends on a scrolling `WebView`.

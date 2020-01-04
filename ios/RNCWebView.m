@@ -50,7 +50,6 @@ static NSDictionary* customCertificatesForHost;
 @property (nonatomic, copy) RCTDirectEventBlock onScrollViewWillBeginDecelerating;
 @property (nonatomic, copy) RCTDirectEventBlock onHttpError;
 @property (nonatomic, copy) RCTDirectEventBlock onMessage;
-@property (nonatomic, copy) RCTDirectEventBlock onRetractBarsRecommendation;
 @property (nonatomic, copy) RCTDirectEventBlock onPress;
 @property (nonatomic, copy) RCTDirectEventBlock onScroll;
 @property (nonatomic, copy) RCTDirectEventBlock onScrollEndDrag;
@@ -658,11 +657,11 @@ static NSDictionary* customCertificatesForHost;
     scrollView.bounds = _webView.bounds;
     return;
   }
-  if(_onScroll == nil && _onRetractBarsRecommendation == nil){
+  if(_onScroll == nil){
     return;
   }
-  CGPoint translationInScrollView = [scrollView.panGestureRecognizer translationInView:scrollView];
   if (_onScroll != nil) {
+    CGPoint translationInScrollView = [scrollView.panGestureRecognizer translationInView:scrollView];
     CGPoint translationInWebView = [scrollView.panGestureRecognizer translationInView:self.webView];
     
     NSDictionary *event = @{
@@ -697,17 +696,11 @@ static NSDictionary* customCertificatesForHost;
       };
     _onScroll(event);
   }
-  if(_onRetractBarsRecommendation != nil && translationInScrollView.y < 0 && scrollView.isDragging){
-    NSDictionary *event = @{
-        @"recommendation": @"retract",
-    };
-    _onRetractBarsRecommendation(event);
-  }
 }
 
 - (void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView
 {
-    if(_onScrollViewWillBeginDecelerating == nil && _onRetractBarsRecommendation == nil){
+    if(_onScrollViewWillBeginDecelerating == nil){
         return;
     }
     CGPoint translationInScrollView = [scrollView.panGestureRecognizer translationInView:scrollView];
@@ -745,23 +738,12 @@ static NSDictionary* customCertificatesForHost;
         };
         _onScrollViewWillBeginDecelerating(event);
     }
-    if(_onRetractBarsRecommendation){
-        NSDictionary *event = @{
-            @"recommendation": translationInScrollView.y <= 0 ? @"retract" : @"reveal",
-        };
-        _onRetractBarsRecommendation(event);
-    }
 }
 
+/* TODO: replace this with the (hopefully more elegant) implementation that RCTScrollView uses */
 - (BOOL)scrollViewShouldScrollToTop:(UIScrollView *)scrollView {
     /* On first tap of status bar, by default, we prevent scrolling to top – just recommend to reveal bars. */
     if(_barsAreRetractedOrRetracting && _revealBarsWithoutScrollingToTopOnFirstTapOfStatusBar){
-        if(_onRetractBarsRecommendation != nil){
-            NSDictionary *event = @{
-                @"recommendation": @"reveal",
-            };
-            _onRetractBarsRecommendation(event);
-        }
         return false;
     }
     
