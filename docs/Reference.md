@@ -526,7 +526,7 @@ Example:
   onRetractBarsRecommendation={syntheticEvent => {
     const {
       recommendation
-    } = syntheticEvent.nativeEvent;
+    } = syntheticEvent;
   }}
 />
 ```
@@ -562,12 +562,12 @@ Example:
       panGestureTranslationInScrollView,
       panGestureTranslationInWebView,
       scrollViewIsDragging,
-    } = syntheticEvent.nativeEvent;
+    } = syntheticEvent;
   }}
 />
 ```
 
-The `syntheticEvent.nativeEvent` object includes these properties:
+The `syntheticEvent` object includes these properties:
 
 ```
 contentOffset,

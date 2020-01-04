@@ -143,7 +143,7 @@ export interface WebViewHttpError extends WebViewNativeEvent {
   statusCode: number;
 }
 
-export interface RetractBarsRecommendation {
+export interface RetractBarsRecommendationEvent {
   recommendation: "retract"|"reveal";
 }
 export type WebViewPressEvent = NativeSyntheticEvent<WebViewNativePressEvent>;
@@ -163,8 +163,6 @@ export type WebViewErrorEvent = NativeSyntheticEvent<WebViewError>;
 export type WebViewTerminatedEvent = NativeSyntheticEvent<WebViewNativeEvent>;
 
 export type WebViewHttpErrorEvent = NativeSyntheticEvent<WebViewHttpError>;
-
-export type RetractBarsRecommendationEvent = NativeSyntheticEvent<RetractBarsRecommendation>;
 
 export type DataDetectorTypes =
   | 'phoneNumber'
