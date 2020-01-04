@@ -40,7 +40,7 @@ static NSDictionary* customCertificatesForHost;
 }
 @end
 
-@interface RNCWebView () <WKUIDelegate, WKNavigationDelegate, WKScriptMessageHandler, UIScrollViewDelegate, RCTAutoInsetsProtocol>
+@interface RNCWebView () <WKUIDelegate, WKNavigationDelegate, WKScriptMessageHandler, UIScrollViewDelegate, UIGestureRecognizerDelegate, RCTAutoInsetsProtocol>
 @property (nonatomic, copy) RCTDirectEventBlock onLoadingStart;
 @property (nonatomic, copy) RCTDirectEventBlock onLoadingFinish;
 @property (nonatomic, copy) RCTDirectEventBlock onLoadingError;
@@ -335,7 +335,7 @@ static NSDictionary* customCertificatesForHost;
         [_webView removeFromSuperview];
         _webView.scrollView.delegate = nil;
 
-        for(int i = 0; _webView.scrollView.gestureRecognizers.count; i++){
+        for(int i = 0; i < _webView.scrollView.gestureRecognizers.count; i++){
             UIGestureRecognizer* gestureRecognizer = _webView.scrollView.gestureRecognizers[i];
             [_webView.scrollView removeGestureRecognizer:gestureRecognizer];
             gestureRecognizer.delegate = nil;
