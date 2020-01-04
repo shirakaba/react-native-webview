@@ -50,7 +50,7 @@ static NSDictionary* customCertificatesForHost;
 @property (nonatomic, copy) RCTDirectEventBlock onScrollViewWillBeginDecelerating;
 @property (nonatomic, copy) RCTDirectEventBlock onHttpError;
 @property (nonatomic, copy) RCTDirectEventBlock onMessage;
-@property (nonatomic, copy) RCTDirectEventBlock onPress;
+@property (nonatomic, copy) RCTDirectEventBlock onPressLike;
 @property (nonatomic, copy) RCTDirectEventBlock onScroll;
 @property (nonatomic, copy) RCTDirectEventBlock onScrollEndDrag;
 @property (nonatomic, copy) RCTDirectEventBlock onContentProcessDidTerminate;
@@ -914,7 +914,7 @@ static NSDictionary* customCertificatesForHost;
 
 -(void)onTap:(UITapGestureRecognizer*)gesture
 {
-    if(_onPress == nil){
+    if(_onPressLike == nil){
         return;
     }
     if(gesture.state != UIGestureRecognizerStateEnded){
@@ -935,7 +935,7 @@ static NSDictionary* customCertificatesForHost;
           @"zoomScale": @(self.webView.scrollView.zoomScale)
           }
       };
-    _onPress(event);
+    _onPressLike(event);
 }
 
 #pragma mark - UIGestureRecognizerDelegate methods

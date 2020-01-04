@@ -87,7 +87,7 @@ export interface ContentInsetProp {
   right?: number;
 }
 
-export interface WebViewNativePressEvent {
+export interface WebViewNativePressLikeEvent {
   view: {
     x: number;
     y: number;
@@ -143,7 +143,7 @@ export interface WebViewHttpError extends WebViewNativeEvent {
   statusCode: number;
 }
 
-export type WebViewPressEvent = NativeSyntheticEvent<WebViewNativePressEvent>;
+export type WebViewPressLikeEvent = NativeSyntheticEvent<WebViewNativePressLikeEvent>;
 
 export type WebViewEvent = NativeSyntheticEvent<WebViewNativeEvent>;
 
@@ -311,7 +311,7 @@ export interface IOSNativeWebViewProps extends CommonNativeWebViewProps {
   onContentProcessDidTerminate?: (event: WebViewTerminatedEvent) => void;
   onLoadingCommit?: (event: WebViewNavigationEvent) => void;
   onScrollEndDrag?: (event: NativeScrollEvent) => void;
-  onPress?: (event: WebViewPressEvent) => void;
+  onPressLike?: (event: WebViewPressLikeEvent) => void;
 }
 
 export interface IOSWebViewProps extends WebViewSharedProps {
@@ -540,7 +540,7 @@ export interface IOSWebViewProps extends WebViewSharedProps {
   /**
    * Function that is invoked when the `WebView` is pressed.
    */
-  onPress?: (event: WebViewPressEvent) => void;
+  onPressLike?: (event: WebViewPressLikeEvent) => void;
 }
 
 export interface AndroidWebViewProps extends WebViewSharedProps {
