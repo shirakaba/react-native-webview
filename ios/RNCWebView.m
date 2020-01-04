@@ -293,7 +293,7 @@ static NSDictionary* customCertificatesForHost;
 
     _webView = [[WKWebView alloc] initWithFrame:self.bounds configuration: wkWebViewConfig];
     [self setBackgroundColor: _savedBackgroundColor];
-    UITapGestureRecognizer* gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:_webView.scrollView action:@selector(onTap:)];
+    UITapGestureRecognizer* gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onTap:)];
     gestureRecognizer.delegate = self;
     [_webView.scrollView addGestureRecognizer:gestureRecognizer];
     _webView.scrollView.delegate = self;
