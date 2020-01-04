@@ -72,6 +72,18 @@ export interface ContentInsetProp {
   right?: number;
 }
 
+export interface WebViewNativePressEvent {
+  view: {
+    x: number;
+    y: number;
+  };
+  scrollView: {
+    x: number;
+    y: number;
+    zoomScale: number;
+  };
+}
+
 export interface WebViewNativeEvent {
   url: string;
   loading: boolean;
@@ -115,6 +127,8 @@ export interface WebViewHttpError extends WebViewNativeEvent {
   description: string;
   statusCode: number;
 }
+
+export type WebViewPressEvent = NativeSyntheticEvent<WebViewNativePressEvent>;
 
 export type WebViewEvent = NativeSyntheticEvent<WebViewNativeEvent>;
 
@@ -279,6 +293,7 @@ export interface IOSNativeWebViewProps extends CommonNativeWebViewProps {
   scrollEnabled?: boolean;
   useSharedProcessPool?: boolean;
   onContentProcessDidTerminate?: (event: WebViewTerminatedEvent) => void;
+  onPress?: (event: WebViewPressEvent) => void;
 }
 
 export interface IOSWebViewProps extends WebViewSharedProps {
@@ -458,6 +473,11 @@ export interface IOSWebViewProps extends WebViewSharedProps {
    * @platform ios
    */
   onContentProcessDidTerminate?: (event: WebViewTerminatedEvent) => void;
+
+  /**
+   * Function that is invoked when the `WebView` is pressed.
+   */
+  onPress?: (event: WebViewPressEvent) => void;
 }
 
 export interface AndroidWebViewProps extends WebViewSharedProps {
