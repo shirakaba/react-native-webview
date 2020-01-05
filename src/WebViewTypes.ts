@@ -314,6 +314,7 @@ export interface IOSNativeWebViewProps extends CommonNativeWebViewProps {
   onPressLike?: (event: WebViewPressLikeEvent) => void;
   injectedJavaScriptForMainFrameOnly?: boolean;
   injectedJavaScriptBeforeContentLoadedForMainFrameOnly?: boolean;
+  messagingEnabledForMainFrameOnly?: boolean;
 }
 
 export interface IOSWebViewProps extends WebViewSharedProps {
@@ -495,6 +496,14 @@ export interface IOSWebViewProps extends WebViewSharedProps {
    * @platform ios
    */
   directionalLockEnabled?: boolean;
+
+  /**
+   * Controls whether messaging is enabled for just the main frame (`true`) or all frames (`false`).
+   * Has no effect if `messagingEnabled` is `false`.
+   * The default value is `true`.
+   * @platform ios
+   */
+  messagingEnabledForMainFrameOnly?: boolean;
 
   /**
    * A Boolean value indicating whether web content can programmatically display the keyboard.
