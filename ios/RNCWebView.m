@@ -1305,19 +1305,19 @@ static NSDictionary* customCertificatesForHost;
       [_webView.configuration.userContentController addUserScript:cookieInScript];
     }
   }
+
+  if (self.atStartScript) {
+    [_webView.configuration.userContentController addUserScript:self.atStartScript];
+  }
+  if (self.atEndScript) {
+    [_webView.configuration.userContentController addUserScript:self.atEndScript];
+  }
   
   if(_messagingEnabled){
     if (self.postMessageScript){
       [_webView.configuration.userContentController addScriptMessageHandler:[[RNCWeakScriptMessageDelegate alloc] initWithDelegate:self]
                                                                        name:MessageHandlerName];
       [_webView.configuration.userContentController addUserScript:self.postMessageScript];
-    }
-    // FIXME: For a separate (minor) PR: these two shouldn't be gated by messagingEnabled; just keeping consistency with previous behaviour.
-    if (self.atStartScript) {
-      [_webView.configuration.userContentController addUserScript:self.atStartScript];
-    }
-    if (self.atEndScript) {
-      [_webView.configuration.userContentController addUserScript:self.atEndScript];
     }
   }
 }
