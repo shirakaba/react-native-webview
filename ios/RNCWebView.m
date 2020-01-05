@@ -177,7 +177,7 @@ static NSDictionary* customCertificatesForHost;
   [wkWebViewConfig.userContentController addScriptMessageHandler:[[RNCWeakScriptMessageDelegate alloc] initWithDelegate:self]
                                                             name:HistoryShimName];
 
-  [self resetupScripts];
+  [self resetupScripts:wkWebViewConfig];
 
   wkWebViewConfig.allowsInlineMediaPlayback = _allowsInlineMediaPlayback;
 #if WEBKIT_IOS_10_APIS_AVAILABLE
@@ -1109,16 +1109,7 @@ static NSDictionary* customCertificatesForHost;
 - (void)webView:(WKWebView *)webView
   didFinishNavigation:(WKNavigation *)navigation
 {
-   if (_injectedJavaScript) {
-     [self evaluateJS: _injectedJavaScript thenCall: ^(NSString *jsEvaluationValue) {
-       NSMutableDictionary *event = [self baseEvent];
-       event[@"jsEvaluationValue"] = jsEvaluationValue;
-
-       if (self.onLoadingFinish) {
-         self.onLoadingFinish(event);
-       }
-     }];
-   } else if (_onLoadingFinish) {
+  if (_onLoadingFinish) {
     _onLoadingFinish([self baseEvent]);
   }
 }
@@ -1166,33 +1157,37 @@ static NSDictionary* customCertificatesForHost;
 }
 
 
-- (void)setInjectedJavaScript:(NSString *)script {
-  _injectedJavaScript = script;
+- (void)setInjectedJavaScript:(NSString *)source {
+  _injectedJavaScript = source;
   
-  self.atStartScript = script == nil ? nil : [[WKUserScript alloc] initWithSource:script
-      injectionTime:WKUserScriptInjectionTimeAtDocumentStart
+  self.atEndScript = source == nil ? nil : [[WKUserScript alloc] initWithSource:source
+      injectionTime:WKUserScriptInjectionTimeAtDocumentEnd
     forMainFrameOnly:_injectedJavaScriptForMainFrameOnly];
   
-  [self resetupScripts];
+  if(_webView != nil){
+    [self resetupScripts:_webView.configuration];
+  }
 }
 
-- (void)setInjectedJavaScriptBeforeContentLoaded:(NSString *)script {
-  _injectedJavaScriptBeforeContentLoaded = script;
+- (void)setInjectedJavaScriptBeforeContentLoaded:(NSString *)source {
+  _injectedJavaScriptBeforeContentLoaded = source;
   
-  self.atEndScript = script == nil ? nil : [[WKUserScript alloc] initWithSource:script
-       injectionTime:WKUserScriptInjectionTimeAtDocumentEnd
+  self.atStartScript = source == nil ? nil : [[WKUserScript alloc] initWithSource:source
+       injectionTime:WKUserScriptInjectionTimeAtDocumentStart
     forMainFrameOnly:_injectedJavaScriptBeforeContentLoadedForMainFrameOnly];
   
-  [self resetupScripts];
+  if(_webView != nil){
+    [self resetupScripts:_webView.configuration];
+  }
 }
 
-- (void)setInjectedJavaScriptForMainFrameOnly:(BOOL)inject {
-  _injectedJavaScriptForMainFrameOnly = inject;
+- (void)setInjectedJavaScriptForMainFrameOnly:(BOOL)mainFrameOnly {
+  _injectedJavaScriptForMainFrameOnly = mainFrameOnly;
   [self setInjectedJavaScript:_injectedJavaScript];
 }
 
-- (void)setInjectedJavaScriptBeforeContentLoadedForMainFrameOnly:(BOOL)inject {
-  _injectedJavaScriptBeforeContentLoadedForMainFrameOnly = inject;
+- (void)setInjectedJavaScriptBeforeContentLoadedForMainFrameOnly:(BOOL)mainFrameOnly {
+  _injectedJavaScriptBeforeContentLoadedForMainFrameOnly = mainFrameOnly;
   [self setInjectedJavaScriptBeforeContentLoaded:_injectedJavaScriptBeforeContentLoaded];
 }
 
@@ -1218,10 +1213,12 @@ static NSDictionary* customCertificatesForHost;
    ] :
   nil;
   
-  [self resetupScripts];
+  if(_webView != nil){
+    [self resetupScripts:_webView.configuration];
+  }
 }
 
-- (void)resetupScripts {
+- (void)resetupScripts:(WKWebViewConfiguration *)wkWebViewConfig {
   [_webView.configuration.userContentController removeAllUserScripts];
   [_webView.configuration.userContentController removeScriptMessageHandlerForName:MessageHandlerName];
   
