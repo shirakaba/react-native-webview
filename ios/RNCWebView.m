@@ -1307,10 +1307,10 @@ static NSDictionary* customCertificatesForHost;
   }
 
   if (self.atStartScript) {
-    [_webView.configuration.userContentController addUserScript:self.atStartScript];
+    [wkWebViewConfig.userContentController addUserScript:self.atStartScript];
   }
   if (self.atEndScript) {
-    [_webView.configuration.userContentController addUserScript:self.atEndScript];
+    [wkWebViewConfig.userContentController addUserScript:self.atEndScript];
   }
   
   if(_messagingEnabled){
