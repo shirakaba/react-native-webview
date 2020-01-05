@@ -312,6 +312,8 @@ export interface IOSNativeWebViewProps extends CommonNativeWebViewProps {
   onLoadingCommit?: (event: WebViewNavigationEvent) => void;
   onScrollEndDrag?: (event: NativeScrollEvent) => void;
   onPressLike?: (event: WebViewPressLikeEvent) => void;
+  injectedJavaScriptForMainFrameOnly?: boolean;
+  injectedJavaScriptBeforeContentLoadedForMainFrameOnly?: boolean;
 }
 
 export interface IOSWebViewProps extends WebViewSharedProps {
@@ -541,6 +543,20 @@ export interface IOSWebViewProps extends WebViewSharedProps {
    * Function that is invoked when the `WebView` is pressed.
    */
   onPressLike?: (event: WebViewPressLikeEvent) => void;
+
+  /**
+   * If `true` (default), loads the `injectedJavaScript` only into the main frame.
+   * If `false`, loads it into all frames (e.g. iframes).
+   * @platform ios
+  */
+  injectedJavaScriptForMainFrameOnly?: boolean;
+
+  /**
+   * If `true` (default), loads the `injectedJavaScriptBeforeContentLoaded` only into the main frame.
+   * If `false`, loads it into all frames (e.g. iframes).
+   * @platform ios
+  */
+  injectedJavaScriptBeforeContentLoadedForMainFrameOnly?: boolean;
 }
 
 export interface AndroidWebViewProps extends WebViewSharedProps {
