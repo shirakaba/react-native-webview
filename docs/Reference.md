@@ -58,6 +58,7 @@ This document lays out the current public properties and methods for the React N
 - [`incognito`](Reference.md#incognito)
 - [`allowFileAccess`](Reference.md#allowFileAccess)
 - [`saveFormDataDisabled`](Reference.md#saveFormDataDisabled)
+- [`messagingEnabledForMainFrameOnly`](Reference.md#messagingenabledformainframeonly)
 - [`cacheEnabled`](Reference.md#cacheEnabled)
 - [`cacheMode`](Reference.md#cacheMode)
 - [`pagingEnabled`](Reference.md#pagingEnabled)
@@ -1043,6 +1044,18 @@ Sets whether the WebView should disable saving form data. The default value is `
 | Type    | Required | Platform |
 | ------- | -------- | -------- |
 | boolean | No       | Android  |
+
+---
+
+### `messagingEnabledForMainFrameOnly`
+
+Controls whether messaging is enabled for just the main frame (`true`) or all frames (`false`).
+
+Has no effect if `messagingEnabled` is `false`.
+
+| Type    | Required | Default | Platform |
+| ------- | -------- | ------- | ------- |
+| boolean | No       | true    | iOS     |
 
 ---
 
