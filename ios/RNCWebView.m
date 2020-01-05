@@ -1218,8 +1218,8 @@ static NSDictionary* customCertificatesForHost;
 }
 
 - (void)resetupScripts:(WKWebViewConfiguration *)wkWebViewConfig {
-  [_webView.configuration.userContentController removeAllUserScripts];
-  [_webView.configuration.userContentController removeScriptMessageHandlerForName:MessageHandlerName];
+  [wkWebViewConfig.userContentController removeAllUserScripts];
+  [wkWebViewConfig.userContentController removeScriptMessageHandlerForName:MessageHandlerName];
   
   NSString *html5HistoryAPIShimSource = [NSString stringWithFormat:
     @"(function(history) {\n"
@@ -1242,7 +1242,7 @@ static NSDictionary* customCertificatesForHost;
     "})(window.history)\n", HistoryShimName
   ];
   WKUserScript *script = [[WKUserScript alloc] initWithSource:html5HistoryAPIShimSource injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:YES];
-  [_webView.configuration.userContentController addUserScript:script];
+  [wkWebViewConfig.userContentController addUserScript:script];
   
   if(_sharedCookiesEnabled) {
     // More info to sending cookies with WKWebView
@@ -1252,10 +1252,10 @@ static NSDictionary* customCertificatesForHost;
       // See also https://forums.developer.apple.com/thread/97194
       // check if websiteDataStore has not been initialized before
       if(!_incognito && !_cacheEnabled) {
-        _webView.configuration.websiteDataStore = [WKWebsiteDataStore nonPersistentDataStore];
+        wkWebViewConfig.websiteDataStore = [WKWebsiteDataStore nonPersistentDataStore];
       }
       for (NSHTTPCookie *cookie in [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies]) {
-        [_webView.configuration.websiteDataStore.httpCookieStore setCookie:cookie completionHandler:nil];
+        [wkWebViewConfig.websiteDataStore.httpCookieStore setCookie:cookie completionHandler:nil];
       }
     } else {
       NSMutableString *script = [NSMutableString string];
@@ -1302,7 +1302,7 @@ static NSDictionary* customCertificatesForHost;
       WKUserScript* cookieInScript = [[WKUserScript alloc] initWithSource:script
                                                             injectionTime:WKUserScriptInjectionTimeAtDocumentStart
                                                          forMainFrameOnly:YES];
-      [_webView.configuration.userContentController addUserScript:cookieInScript];
+      [wkWebViewConfig.userContentController addUserScript:cookieInScript];
     }
   }
 
@@ -1315,9 +1315,9 @@ static NSDictionary* customCertificatesForHost;
   
   if(_messagingEnabled){
     if (self.postMessageScript){
-      [_webView.configuration.userContentController addScriptMessageHandler:[[RNCWeakScriptMessageDelegate alloc] initWithDelegate:self]
+      [wkWebViewConfig.userContentController addScriptMessageHandler:[[RNCWeakScriptMessageDelegate alloc] initWithDelegate:self]
                                                                        name:MessageHandlerName];
-      [_webView.configuration.userContentController addUserScript:self.postMessageScript];
+      [wkWebViewConfig.userContentController addUserScript:self.postMessageScript];
     }
   }
 }
