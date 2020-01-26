@@ -465,7 +465,7 @@ export interface IOSWebViewProps extends WebViewSharedProps {
    * @see https://developer.apple.com/documentation/webkit/wknavigationdelegate/1455635-webview
    * @platform ios
    */
-  onLoadCommit: (event: WebViewNavigationEvent) => void;
+  onLoadCommit?: (event: WebViewNavigationEvent) => void;
 }
 
 export interface AndroidWebViewProps extends WebViewSharedProps {
