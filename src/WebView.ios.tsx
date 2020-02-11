@@ -54,6 +54,72 @@ const RNCWebView: typeof NativeWebViewIOS = requireNativeComponent(
   'RNCWebView',
 );
 
+export type AdornedRef = NativeWebViewIOS & WebView;
+
+/**
+ * TODO: make these typings suit Android as well.
+ */
+interface SetAndForwardRefArgs {
+  getForwardedRef: () => React.Ref<AdornedRef> | undefined,
+  setLocalRef: (ref: AdornedRef) => unknown,
+}
+
+/**
+ * This is a helper function for when a component needs to be able to forward a ref
+ * to a child component, but still needs to have access to that component as part of
+ * its implementation.
+ *
+ * Its main use case is in wrappers for native components.
+ *
+ * Usage:
+ *
+ *   class MyView extends React.Component {
+ *     _nativeRef = null;
+ *
+ *     _setNativeRef = setAndForwardRef({
+ *       getForwardedRef: () => this.props.forwardedRef,
+ *       setLocalRef: ref => {
+ *         this._nativeRef = ref;
+ *       },
+ *     });
+ *
+ *     render() {
+ *       return <View ref={this._setNativeRef} />;
+ *     }
+ *   }
+ *
+ *   const MyViewWithRef = React.forwardRef((props, ref) => (
+ *     <MyView {...props} forwardedRef={ref} />
+ *   ));
+ *
+ *   module.exports = MyViewWithRef;
+ * 
+ * @see https://github.com/facebook/react-native/blob/6449cc436365e86fc08d52e0236b0d8f783fcec6/Libraries/Utilities/setAndForwardRef.js#L51
+ * @see https://github.com/react-native-community/react-native-webview/pull/1102#issuecomment-571427801
+ * 
+ * WARNING: I cannot guarantee the correctness of these typings, as I have done my best to convert from Flow and my head hurts.
+ */
+function setAndForwardRef({
+  getForwardedRef,
+  setLocalRef,
+}: SetAndForwardRefArgs): (ref: AdornedRef) => void {
+  return function forwardRef(ref: AdornedRef) {
+    const forwardedRef = getForwardedRef();
+
+    setLocalRef(ref);
+
+    // Forward to user ref prop (if one has been specified)
+    if (typeof forwardedRef === 'function') {
+      // Handle function-based refs. String-based refs are handled as functions.
+      forwardedRef(ref);
+    } else if (typeof forwardedRef === 'object' && forwardedRef != null) {
+      type CreateRefBasedRef = React.MutableRefObject<AdornedRef>;
+      // Handle createRef-based refs
+      (forwardedRef as CreateRefBasedRef).current = ref!;
+    }
+  };
+}
+
 class WebView extends React.Component<IOSWebViewProps, State> {
   static defaultProps = {
     javaScriptEnabled: true,
@@ -72,7 +138,7 @@ class WebView extends React.Component<IOSWebViewProps, State> {
     lastErrorEvent: null,
   };
 
-  webViewRef = React.createRef<NativeWebViewIOS>();
+  _nativeRef: AdornedRef|null = null;
 
   /** 
    * Required to allow createAnimatedComponent() to hook up to the underlying NativeWebView rather than its wrapping View.
@@ -80,8 +146,29 @@ class WebView extends React.Component<IOSWebViewProps, State> {
    * @see: Implementation: https://github.com/facebook/react-native/blob/8ddf231306e3bd85be718940d04f11d23b570a62/Libraries/Lists/VirtualizedList.js#L515-L521
    */
   getScrollableNode = () => {
-    return this.webViewRef.current;
+    return this._nativeRef;
   };
+
+  _setNativeRef = setAndForwardRef({
+    getForwardedRef: () => this.props.forwardedRef,
+    setLocalRef: ref => {
+      this._nativeRef = ref;
+
+      if(ref){
+        ref.getCommands = this.getCommands;
+        ref.getScrollableNode = this.getScrollableNode;
+        ref.getWebViewHandle = this.getWebViewHandle;
+        ref.goBack = this.goBack;
+        ref.goForward = this.goForward;
+        ref.injectJavaScript = this.injectJavaScript;
+        ref.postMessage = this.postMessage;
+        ref.reload = this.reload;
+        ref.requestFocus = this.requestFocus;
+        ref.stopLoading = this.stopLoading;
+        ref.updateNavigationState = this.updateNavigationState;
+      }
+    },
+  });
 
   // eslint-disable-next-line react/sort-comp
   getCommands = () => UIManager.getViewManagerConfig('RNCWebView').Commands;
@@ -188,7 +275,7 @@ class WebView extends React.Component<IOSWebViewProps, State> {
    * Returns the native `WebView` node.
    */
   getWebViewHandle = () => {
-    const nodeHandle = findNodeHandle(this.webViewRef.current);
+    const nodeHandle = findNodeHandle(this._nativeRef);
     invariant(nodeHandle != null, 'nodeHandle expected to be non-null');
     return nodeHandle as number;
   };
@@ -353,7 +440,7 @@ class WebView extends React.Component<IOSWebViewProps, State> {
         onScroll={this.props.onScroll}
         onShouldStartLoadWithRequest={onShouldStartLoadWithRequest}
         onContentProcessDidTerminate={this.onContentProcessDidTerminate}
-        ref={this.webViewRef}
+        ref={this._setNativeRef}
         // TODO: find a better way to type this.
         source={resolveAssetSource(this.props.source as ImageSourcePropType)}
         style={webViewStyles}
@@ -370,4 +457,8 @@ class WebView extends React.Component<IOSWebViewProps, State> {
   }
 }
 
-export default WebView;
+const ForwardedWebView = React.forwardRef<AdornedRef, IOSWebViewProps>((props, ref) => (
+  <WebView {...props} forwardedRef={ref}/>
+));
+
+export default ForwardedWebView;

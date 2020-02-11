@@ -57,8 +57,9 @@ declare class NativeWebViewIOSComponent extends Component<
    * Required to allow createAnimatedComponent() to hook up to the underlying NativeWebView rather than its wrapping View.
    * @see: Discussion: https://twitter.com/LinguaBrowse/status/1211375582073761799?s=20
    * @see: Implementation: https://github.com/facebook/react-native/blob/8ddf231306e3bd85be718940d04f11d23b570a62/Libraries/Lists/VirtualizedList.js#L515-L521
+   * FIXME: find a way to arrange files in order to type this properly as AdornedRef|null
    */
-  getScrollableNode(): number | null;
+  getScrollableNode(): any | null;
 }
 declare const NativeWebViewIOSBase: Constructor<NativeMethodsMixin> &
   typeof NativeWebViewIOSComponent;
@@ -73,8 +74,9 @@ declare class NativeWebViewAndroidComponent extends Component<
    * Required to allow createAnimatedComponent() to hook up to the underlying NativeWebView rather than its wrapping View.
    * @see: Discussion: https://twitter.com/LinguaBrowse/status/1211375582073761799?s=20
    * @see: Implementation: https://github.com/facebook/react-native/blob/8ddf231306e3bd85be718940d04f11d23b570a62/Libraries/Lists/VirtualizedList.js#L515-L521
+   * FIXME: find a way to arrange files in order to type this properly as AdornedRef|null
    */
-  getScrollableNode(): number | null;
+  getScrollableNode(): any | null;
 }
 declare const NativeWebViewAndroidBase: Constructor<NativeMethodsMixin> &
   typeof NativeWebViewAndroidComponent;
@@ -297,6 +299,12 @@ export interface IOSNativeWebViewProps extends CommonNativeWebViewProps {
 }
 
 export interface IOSWebViewProps extends WebViewSharedProps {
+  /**
+   * FIXME: find a way to arrange files in order to type this properly as
+   * React.ref<AdornedRef>
+   */
+  forwardedRef?: React.Ref<any>;
+
   /**
    * Does not store any data within the lifetime of the WebView.
    */
