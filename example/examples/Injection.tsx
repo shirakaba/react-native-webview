@@ -35,7 +35,7 @@ export default class Injection extends Component<Props, State> {
     return (
       <ScrollView>
         <View style={{ }}>
-          <View style={{ height: 300 }}>
+          <View style={{ height: 400 }}>
             <WebView
               /**
                * This HTML is a copy of a multi-frame JS injection test that I had lying around.
@@ -119,7 +119,7 @@ export default class Injection extends Component<Props, State> {
                 // numberOfFramesAtAfterContentLoadedEle.id = "numberOfFramesAtAfterContentLoadedEle";
 
                 var namedFramesAtBeforeContentLoadedEle = document.createElement('p');
-                namedFramesAtBeforeContentLoadedEle.textContent = "Names of iframes that called beforeContentLoaded: " + JSON.stringify(window.top.injectedIframesBeforeContentLoaded);
+                namedFramesAtBeforeContentLoadedEle.textContent = "Names of iframes that called beforeContentLoaded: " + JSON.stringify(window.top.injectedIframesBeforeContentLoaded || []);
                 namedFramesAtBeforeContentLoadedEle.id = "namedFramesAtBeforeContentLoadedEle";
 
                 var namedFramesAtAfterContentLoadedEle = document.createElement('p');
