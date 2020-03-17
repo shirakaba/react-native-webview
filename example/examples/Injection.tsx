@@ -50,6 +50,8 @@ export default class Injection extends Component<Props, State> {
                * JS injection user scripts, consistent with current behaviour. This is undesirable,
                * so needs addressing in a follow-up PR. */
               onMessage={() => {}}
+              injectedJavaScriptBeforeContentLoadedForMainFrameOnly={false}
+              injectedJavaScriptForMainFrameOnly={false}
 
               /* We set this property in each frame */
               injectedJavaScriptBeforeContentLoaded={`
@@ -84,8 +86,6 @@ export default class Injection extends Component<Props, State> {
                 console.log("wasn't window.top. Still going...");
               }
               `}
-              
-              injectedJavaScriptForMainFrameOnly={false}
 
               /* We read the colourToUse property in each frame to recolour each frame */
               injectedJavaScript={`
