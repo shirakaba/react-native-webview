@@ -186,37 +186,18 @@ const INJECTED_JAVASCRIPT = `(function() {
 
 ### `injectedJavaScriptForMainFrameOnly`
 
-<<<<<<< HEAD
-If `true` (default; mandatory for Android), loads the `injectedJavaScript` only into the main frame.
-
-If `false`, (only supported on iOS and macOS), loads it into all frames (e.g. iframes).
-
-| Type   | Required | Platform |
-| ------ | -------- | -------- |
-| bool | No       | iOS and macOS (only `true` supported for Android) |
-=======
 If `true` (default), loads the `injectedJavaScript` only into the main frame.
 
 If `false`, loads it into all frames (e.g. iframes).
 
 | Type   | Required | Platform |
 | ------ | -------- | -------- |
-| bool | No       | iOS, macOS       |
->>>>>>> 25552977852427cf5fdc7b233fd1bbc7c77c18b0
+| bool | No       | iOS and macOS (only `true` supported for Android) |
 
 ---
 
 ### `injectedJavaScriptBeforeContentLoadedForMainFrameOnly`
 
-<<<<<<< HEAD
-If `true` (default; mandatory for Android), loads the `injectedJavaScriptBeforeContentLoaded` only into the main frame.
-
-If `false`, (only supported on iOS and macOS), loads it into all frames (e.g. iframes).
-
-| Type   | Required | Platform |
-| ------ | -------- | -------- |
-| bool | No       | iOS and macOS (only `true` supported for Android) |
-=======
 If `true` (default), loads the `injectedJavaScriptBeforeContentLoaded` only into the main frame.
 
 If `false`, loads it into all frames (e.g. iframes).
@@ -225,8 +206,7 @@ Warning: although support for `injectedJavaScriptBeforeContentLoadedForMainFrame
 
 | Type   | Required | Platform |
 | ------ | -------- | -------- |
-| bool | No       | iOS, macOS       |
->>>>>>> 25552977852427cf5fdc7b233fd1bbc7c77c18b0
+| bool | No       | iOS and macOS (only `true` supported for Android) |
 
 ---
 
