@@ -202,8 +202,6 @@ If `true` (default), loads the `injectedJavaScriptBeforeContentLoaded` only into
 
 If `false`, loads it into all frames (e.g. iframes).
 
-Warning: although support for `injectedJavaScriptBeforeContentLoadedForMainFrameOnly: false` has been implemented for iOS and macOS, [it is not clear](https://github.com/react-native-community/react-native-webview/pull/1119#issuecomment-600275750) that it is actually possible to inject JS into iframes at this point in the page lifecycle, and so relying on the expected behaviour of this prop when set to `false` is not recommended.
-
 | Type   | Required | Platform |
 | ------ | -------- | -------- |
 | bool | No       | iOS and macOS (only `true` supported for Android) |

@@ -147,8 +147,8 @@ export default class Injection extends Component<Props, State> {
         <Text>✅ If the main frame becomes orange, then top-frame injection both beforeContentLoaded and afterContentLoaded is supported.</Text>
         <Text>✅ If iframe_0, and iframe_1 become orange, then multi-frame injection beforeContentLoaded and afterContentLoaded is supported.</Text>
         <Text>✅ If the two texts say "beforeContentLoaded on the top frame succeeded!" and "afterContentLoaded on the top frame succeeded!", then both injection times are supported at least on the main frame.</Text>
-        <Text>⚠️ If either of the two iframes become coloured cyan, then for that given frame, JS injection succeeded after the content loaded, but didn't occur before the content loaded - please note that for iframes, this may not be a test failure, as it is not clear whether we would expect iframes to support an injection time of beforeContentLoaded anyway.</Text>
-        <Text>⚠️ If "Names of iframes that called beforeContentLoaded: " is [], then see above.</Text>
+        <Text>❌ If either of the two iframes become coloured cyan, then for that given frame, JS injection succeeded after the content loaded, but didn't occur before the content loaded.</Text>
+        <Text>❌ If "Names of iframes that called beforeContentLoaded: " is [], then see above.</Text>
         <Text>❌ If "Names of iframes that called afterContentLoaded: " is [], then afterContentLoaded is not supported in iframes.</Text>
         <Text>❌ If the main frame becomes coloured cyan, then JS injection succeeded after the content loaded, but didn't occur before the content loaded.</Text>
         <Text>❌ If the text "beforeContentLoaded on the top frame failed" remains unchanged, then JS injection has failed on the main frame before the content loaded.</Text>
