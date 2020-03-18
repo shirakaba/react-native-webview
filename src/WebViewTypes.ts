@@ -301,8 +301,6 @@ export interface IOSNativeWebViewProps extends CommonNativeWebViewProps {
   scrollEnabled?: boolean;
   useSharedProcessPool?: boolean;
   onContentProcessDidTerminate?: (event: WebViewTerminatedEvent) => void;
-  injectedJavaScriptForMainFrameOnly?: boolean;
-  injectedJavaScriptBeforeContentLoadedForMainFrameOnly?: boolean;
 }
 
 export interface MacOSNativeWebViewProps extends CommonNativeWebViewProps {
@@ -499,20 +497,6 @@ export interface IOSWebViewProps extends WebViewSharedProps {
    * @platform ios
    */
   onContentProcessDidTerminate?: (event: WebViewTerminatedEvent) => void;
-
-  /**
-   * If `true` (default), loads the `injectedJavaScript` only into the main frame.
-   * If `false`, loads it into all frames (e.g. iframes).
-   * @platform ios
-  */
-  injectedJavaScriptForMainFrameOnly?: boolean;
-
-  /**
-   * If `true` (default), loads the `injectedJavaScriptBeforeContentLoaded` only into the main frame.
-   * If `false`, loads it into all frames (e.g. iframes).
-   * @platform ios
-  */
-  injectedJavaScriptBeforeContentLoadedForMainFrameOnly?: boolean;
 }
 
 export interface MacOSWebViewProps extends WebViewSharedProps {
@@ -881,6 +865,7 @@ export interface WebViewSharedProps extends ViewProps {
   /**
    * Set this to provide JavaScript that will be injected into the web page
    * once the webview is initialized but before the view loads any content.
+   * Caution: for Android, may work only on static HTML sources rather than hosted web pages.
    */
   injectedJavaScriptBeforeContentLoaded?: string;
 
