@@ -160,9 +160,11 @@ Make sure the string evaluates to a valid type (`true` works) and doesn't otherw
 
 On iOS, see [`WKUserScriptInjectionTimeAtDocumentStart`](https://developer.apple.com/documentation/webkit/wkuserscriptinjectiontime/wkuserscriptinjectiontimeatdocumentstart?language=objc)
 
+Caution: on Android, `injectedJavaScriptBeforeContentLoaded` has been found to be [very unreliable](https://github.com/react-native-community/react-native-webview/pull/1099). It may only be reliable on static HTML sources rather than hosted websites.
+
 | Type   | Required | Platform |
 | ------ | -------- | -------- |
-| string | No       | iOS, macOS |
+| string | No       | iOS, macOS, Android (but see issues) |
 
 To learn more, read the [Communicating between JS and Native](Guide.md#communicating-between-js-and-native) guide.
 
