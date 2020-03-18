@@ -179,6 +179,17 @@
         "code",
         "doc"
       ]
+    },
+    {
+      "login": "shirakaba",
+      "name": "Jamie Birch",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/14055146?v=4",
+      "profile": "https://twitter.com/LinguaBrowse",
+      "contributions": [
+        "code",
+        "doc",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7
