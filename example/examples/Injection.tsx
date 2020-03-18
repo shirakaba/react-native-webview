@@ -3,23 +3,23 @@ import {Text, View, ScrollView} from 'react-native';
 
 import WebView from 'react-native-webview';
 
-// const HTML = `
-// <!DOCTYPE html>
-// <html>
-//   <head>
-//       <meta charset="utf-8">
-//       <meta name="viewport" content="width=device-width, initial-scale=1">
-//       <title>iframe test</title>
-//   </head>
-//   <body>
-//     <p style="">beforeContentLoaded on the top frame <span id="before_failed" style="display: inline-block;">failed</span><span id="before_succeeded" style="display: none;">succeeded</span>!</p>
-//     <p style="">afterContentLoaded on the top frame <span id="after_failed" style="display: inline-block;">failed</span><span id="after_succeeded" style="display: none;">succeeded</span>!</p>
-//     <iframe src="https://birchlabs.co.uk/linguabrowse/infopages/obsol/iframe.html?v=1" name="iframe_0" style="width: 100%; height: 25px;"></iframe>
-//     <iframe src="https://birchlabs.co.uk/linguabrowse/infopages/obsol/iframe2.html?v=1" name="iframe_1" style="width: 100%; height: 25px;"></iframe>
-//     <iframe src="https://www.ebay.co.uk" name="iframe_2" style="width: 100%; height: 25px;"></iframe>
-//   </body>
-// </html>
-// `;
+const HTML = `
+<!DOCTYPE html>
+<html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <title>iframe test</title>
+  </head>
+  <body>
+    <p style="">beforeContentLoaded on the top frame <span id="before_failed" style="display: inline-block;">failed</span><span id="before_succeeded" style="display: none;">succeeded</span>!</p>
+    <p style="">afterContentLoaded on the top frame <span id="after_failed" style="display: inline-block;">failed</span><span id="after_succeeded" style="display: none;">succeeded</span>!</p>
+    <iframe src="https://birchlabs.co.uk/linguabrowse/infopages/obsol/iframe.html?v=1" name="iframe_0" style="width: 100%; height: 25px;"></iframe>
+    <iframe src="https://birchlabs.co.uk/linguabrowse/infopages/obsol/iframe2.html?v=1" name="iframe_1" style="width: 100%; height: 25px;"></iframe>
+    <iframe src="https://www.ebay.co.uk" name="iframe_2" style="width: 100%; height: 25px;"></iframe>
+  </body>
+</html>
+`;
 
 type Props = {};
 type State = {
@@ -38,8 +38,9 @@ export default class Injection extends Component<Props, State> {
           <View style={{ height: 400 }}>
             <WebView
               /**
-               * This HTML is a copy of a multi-frame JS injection test that I had lying around.
-               * @see https://birchlabs.co.uk/linguabrowse/infopages/obsol/iframeTest.html
+               * This HTML is a copy of the hosted multi-frame JS injection test.
+               * I have found that Android doesn't support beforeContentLoaded for a hosted HTML webpage, yet does for a static source.
+               * The cause of this is unresolved.
                */
               // source={{ html: HTML }}
               source={{ uri: "https://birchlabs.co.uk/linguabrowse/infopages/obsol/rnw_iframe_test.html" }}
@@ -55,7 +56,7 @@ export default class Injection extends Component<Props, State> {
 
               /* We set this property in each frame */
               injectedJavaScriptBeforeContentLoaded={`
-              console.log("executing injectedJavaScriptBeforeContentLoaded...");
+              console.log("executing injectedJavaScriptBeforeContentLoaded... " + (new Date()).toString());
               if(typeof window.top.injectedIframesBeforeContentLoaded === "undefined"){
                 window.top.injectedIframesBeforeContentLoaded = [];
               }
@@ -89,7 +90,7 @@ export default class Injection extends Component<Props, State> {
 
               /* We read the colourToUse property in each frame to recolour each frame */
               injectedJavaScript={`
-              console.log("executing injectedJavaScript...");
+              console.log("executing injectedJavaScript... " + (new Date()).toString());
               if(typeof window.top.injectedIframesAfterContentLoaded === "undefined"){
                 window.top.injectedIframesAfterContentLoaded = [];
               }
