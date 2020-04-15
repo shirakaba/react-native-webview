@@ -831,10 +831,15 @@ static NSDictionary* customCertificatesForHost;
         return;
     }
     
+    CGPoint windowPoint = [gesture locationInView:nil];
     CGPoint viewPoint = [gesture locationInView:self.webView];
     CGPoint scrollViewPoint = [gesture locationInView:self.webView.scrollView];
     
     NSDictionary *event = @{
+      @"window": @{
+          @"x": @(windowPoint.x),
+          @"y": @(windowPoint.y)
+          },
       @"view": @{
           @"x": @(viewPoint.x),
           @"y": @(viewPoint.y)
