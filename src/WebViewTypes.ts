@@ -88,6 +88,10 @@ export interface ContentInsetProp {
 }
 
 export interface WebViewNativePressLikeEvent {
+  window: {
+    x: number;
+    y: number;
+  };
   view: {
     x: number;
     y: number;
