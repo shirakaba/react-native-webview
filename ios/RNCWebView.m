@@ -832,13 +832,73 @@ static NSDictionary* customCertificatesForHost;
     }
     
     CGPoint windowPoint = [gesture locationInView:nil];
+    UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
+    
+    CGRect windowRect = self.webView.window.frame;
+    CGFloat windowWidth = windowRect.size.width;
+    CGFloat windowHeight = windowRect.size.height;
+    
+    CGFloat windowX;
+    CGFloat windowY;
+    
+    switch (orientation) {
+      case UIDeviceOrientationPortrait:
+        windowX = windowPoint.x;
+        windowY = windowPoint.y;
+        break;
+
+      case UIDeviceOrientationLandscapeLeft:
+        windowX = windowPoint.y;
+        windowY = windowHeight - windowPoint.x;
+        break;
+
+      case UIDeviceOrientationLandscapeRight:
+        windowX = windowWidth - windowPoint.y;
+        windowY = windowPoint.x;
+        break;
+
+      case UIDeviceOrientationPortraitUpsideDown:
+        // Just my guess, as I don't support this orientation.
+        windowX = windowWidth - windowPoint.x;
+        windowY = windowHeight - windowPoint.y;
+        break;
+
+      default:
+        // orientation is unknown, we try to get the status bar orientation
+        switch ([[UIApplication sharedApplication] statusBarOrientation]) {
+          case UIInterfaceOrientationPortrait:
+            windowX = windowPoint.x;
+            windowY = windowPoint.y;
+            break;
+          case UIInterfaceOrientationLandscapeLeft:
+            windowX = windowPoint.y;
+            windowY = windowHeight - windowPoint.x;
+          case UIInterfaceOrientationLandscapeRight:
+            windowX = windowWidth - windowPoint.y;
+            windowY = windowPoint.x;
+            break;
+
+          case UIInterfaceOrientationPortraitUpsideDown:
+            // Just my guess, as I don't support this orientation.
+            windowX = windowWidth - windowPoint.x;
+            windowY = windowHeight - windowPoint.y;
+            break;
+
+          default:
+            windowX = windowPoint.x;
+            windowY = windowPoint.y;
+            break;
+        }
+        break;
+    }
+    
     CGPoint viewPoint = [gesture locationInView:self.webView];
     CGPoint scrollViewPoint = [gesture locationInView:self.webView.scrollView];
     
     NSDictionary *event = @{
       @"window": @{
-          @"x": @(windowPoint.x),
-          @"y": @(windowPoint.y)
+          @"x": @(windowX),
+          @"y": @(windowY)
           },
       @"view": @{
           @"x": @(viewPoint.x),
