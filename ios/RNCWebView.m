@@ -1035,20 +1035,21 @@ static NSDictionary* customCertificatesForHost;
   WKNavigationType navigationType = navigationAction.navigationType;
   NSURLRequest *request = navigationAction.request;
 
-  if (_onShouldStartLoadWithRequest) {
-    NSMutableDictionary<NSString *, id> *event = [self baseEvent];
-    [event addEntriesFromDictionary: @{
-      @"url": (request.URL).absoluteString,
-      @"mainDocumentURL": (request.mainDocumentURL).absoluteString,
-      @"navigationType": navigationTypes[@(navigationType)]
-    }];
-    if (![self.delegate webView:self
-      shouldStartLoadForRequest:event
-                   withCallback:_onShouldStartLoadWithRequest]) {
-      decisionHandler(WKNavigationActionPolicyCancel);
-      return;
-    }
-  }
+/* Disabled for LinguaBrowse, to speed up popovers. */
+//  if (_onShouldStartLoadWithRequest) {
+//    NSMutableDictionary<NSString *, id> *event = [self baseEvent];
+//    [event addEntriesFromDictionary: @{
+//      @"url": (request.URL).absoluteString,
+//      @"mainDocumentURL": (request.mainDocumentURL).absoluteString,
+//      @"navigationType": navigationTypes[@(navigationType)]
+//    }];
+//    if (![self.delegate webView:self
+//      shouldStartLoadForRequest:event
+//                   withCallback:_onShouldStartLoadWithRequest]) {
+//      decisionHandler(WKNavigationActionPolicyCancel);
+//      return;
+//    }
+//  }
 
   if (_onLoadingStart) {
     // We have this check to filter out iframe requests and whatnot
