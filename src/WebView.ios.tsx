@@ -307,6 +307,7 @@ class WebView extends React.Component<IOSWebViewProps, State> {
       originWhitelist,
       renderError,
       renderLoading,
+      navigationOnLinksEnabled = true,
       messagingEnabledForMainFrameOnly = true,
       injectedJavaScriptForMainFrameOnly = true,
       injectedJavaScriptBeforeContentLoadedForMainFrameOnly = true,

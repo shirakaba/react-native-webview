@@ -98,6 +98,7 @@ static NSDictionary* customCertificatesForHost;
     _injectedJavaScriptBeforeContentLoaded = nil;
     _injectedJavaScriptBeforeContentLoadedForMainFrameOnly = YES;
     _messagingEnabledForMainFrameOnly = YES;
+    _navigationOnLinksEnabled = YES;
 
 #if defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 110000 /* __IPHONE_11_0 */
     _savedContentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
@@ -1050,6 +1051,11 @@ static NSDictionary* customCertificatesForHost;
 //      return;
 //    }
 //  }
+
+  if(!_navigationOnLinksEnabled && navigationType == WKNavigationTypeLinkActivated){
+    decisionHandler(WKNavigationActionPolicyCancel);
+    return;
+  }
 
   if (_onLoadingStart) {
     // We have this check to filter out iframe requests and whatnot

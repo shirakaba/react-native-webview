@@ -60,6 +60,7 @@ This document lays out the current public properties and methods for the React N
 - [`keyboardDisplayRequiresUserAction`](Reference.md#keyboardDisplayRequiresUserAction)
 - [`hideKeyboardAccessoryView`](Reference.md#hidekeyboardaccessoryview)
 - [`allowsBackForwardNavigationGestures`](Reference.md#allowsbackforwardnavigationgestures)
+- [`navigationOnLinksEnabled`](Reference.md#navigationonlinksenabled)
 - [`incognito`](Reference.md#incognito)
 - [`allowFileAccess`](Reference.md#allowFileAccess)
 - [`saveFormDataDisabled`](Reference.md#saveFormDataDisabled)
@@ -1155,6 +1156,16 @@ If true, this will be able horizontal swipe gestures. The default value is `fals
 | Type    | Required | Platform |
 | ------- | -------- | -------- |
 | boolean | No       | iOS      |
+
+---
+
+### `navigationOnLinksEnabled`
+
+Whether to allow (`true`) or disallow (`false`) navigation of type [`WKNavigationTypeLinkActivated`](https://developer.apple.com/documentation/webkit/wknavigationtype/wknavigationtypelinkactivated). The default value is `true`.
+
+| Type    | Required | Default | Platform   |
+| ------- | -------- | ------- | --------   |
+| boolean | No       | true    | iOS, macOS |
 
 ---
 

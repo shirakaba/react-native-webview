@@ -294,6 +294,7 @@ export interface AndroidNativeWebViewProps extends CommonNativeWebViewProps {
 export interface IOSNativeWebViewProps extends CommonNativeWebViewProps {
   allowingReadAccessToURL?: string;
   allowsBackForwardNavigationGestures?: boolean;
+  navigationOnLinksEnabled?: boolean;
   allowsInlineMediaPlayback?: boolean;
   allowsLinkPreview?: boolean;
   automaticallyAdjustContentInsets?: boolean;
@@ -556,6 +557,13 @@ export interface IOSWebViewProps extends WebViewSharedProps {
    * Function that is invoked when the `WebView` is pressed.
    */
   onPressLike?: (event: WebViewPressLikeEvent) => void;
+
+  /**
+   * Whether to allow (true) or disallow (false) navigation of type WKNavigationTypeLinkActivated.
+   * @default true
+   * @platform ios
+  */
+  navigationOnLinksEnabled?: boolean;
 
   /**
    * If `true` (default), loads the `injectedJavaScript` only into the main frame.
