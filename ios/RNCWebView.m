@@ -83,6 +83,7 @@ static NSDictionary* customCertificatesForHost;
     super.backgroundColor = [UIColor clearColor];
     _bounces = YES;
     _scrollEnabled = YES;
+    _javaScriptEnabled = YES;
     _barsAreRetractedOrRetracting = NO;
     _revealBarsWithoutScrollingToTopOnFirstTapOfStatusBar = NO;
     _showsHorizontalScrollIndicator = YES;
@@ -153,18 +154,11 @@ static NSDictionary* customCertificatesForHost;
 {
   WKWebViewConfiguration *wkWebViewConfig = [WKWebViewConfiguration new];
   WKPreferences *prefs = [[WKPreferences alloc]init];
-  BOOL _prefsUsed = NO;
-  if (!_javaScriptEnabled) {
-    prefs.javaScriptEnabled = NO;
-    _prefsUsed = YES;
-  }
+  prefs.javaScriptEnabled = _javaScriptEnabled;
   if (_allowFileAccessFromFileURLs) {
     [prefs setValue:@TRUE forKey:@"allowFileAccessFromFileURLs"];
-    _prefsUsed = YES;
   }
-  if (_prefsUsed) {
-    wkWebViewConfig.preferences = prefs;
-  }
+  wkWebViewConfig.preferences = prefs;
   if (_incognito) {
     wkWebViewConfig.websiteDataStore = [WKWebsiteDataStore nonPersistentDataStore];
   } else if (_cacheEnabled) {
@@ -559,6 +553,12 @@ static NSDictionary* customCertificatesForHost;
 {
   _scrollEnabled = scrollEnabled;
   _webView.scrollView.scrollEnabled = scrollEnabled;
+}
+
+- (void)setJavaScriptEnabled:(BOOL)javaScriptEnabled
+{
+  _javaScriptEnabled = javaScriptEnabled;
+  _webView.configuration.preferences.javaScriptEnabled = javaScriptEnabled;
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
