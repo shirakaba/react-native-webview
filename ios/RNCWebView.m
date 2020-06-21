@@ -15,6 +15,7 @@
 
 static NSTimer *keyboardTimer;
 static NSString *const HistoryShimName = @"ReactNativeHistoryShim";
+static NSString *const PinyinjectorMessageHandlerName = @"ReactNativePinyinjector";
 static NSString *const MessageHandlerName = @"ReactNativeWebView";
 static NSURLCredential* clientAuthenticationCredential;
 static NSDictionary* customCertificatesForHost;
@@ -55,6 +56,7 @@ static NSDictionary* customCertificatesForHost;
 @property (nonatomic, copy) RCTDirectEventBlock onScrollEndDrag;
 @property (nonatomic, copy) RCTDirectEventBlock onContentProcessDidTerminate;
 @property (nonatomic, copy) WKWebView *webView;
+@property (nonatomic, strong) WKUserScript *pinyinjectorPostMessageScript;
 @property (nonatomic, strong) WKUserScript *postMessageScript;
 @property (nonatomic, strong) WKUserScript *atStartScript;
 @property (nonatomic, strong) WKUserScript *atEndScript;
@@ -358,6 +360,8 @@ static NSDictionary* customCertificatesForHost;
       [event addEntriesFromDictionary: @{@"navigationType": message.body}];
       _onLoadingFinish(event);
     }
+  } else if ([message.name isEqualToString:PinyinjectorMessageHandlerName]) {
+    
   } else if ([message.name isEqualToString:MessageHandlerName]) {
     if (_onMessage) {
       NSMutableDictionary<NSString *, id> *event = [self baseEvent];
@@ -1386,6 +1390,11 @@ static NSDictionary* customCertificatesForHost;
   }
   
   if(_messagingEnabled){
+    if (self.pinyinjectorPostMessageScript){
+      [wkWebViewConfig.userContentController addScriptMessageHandler:[[RNCWeakScriptMessageDelegate alloc] initWithDelegate:self]
+                                                                       name:PinyinjectorMessageHandlerName];
+      [wkWebViewConfig.userContentController addUserScript:self.pinyinjectorPostMessageScript];
+    }
     if (self.postMessageScript){
       [wkWebViewConfig.userContentController addScriptMessageHandler:[[RNCWeakScriptMessageDelegate alloc] initWithDelegate:self]
                                                                        name:MessageHandlerName];
