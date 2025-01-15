@@ -55,70 +55,79 @@ namespace winrt::ReactNativeWebView::implementation {
         return nativeProps.GetView();
     }
 
-    void ReactWebView2Manager::UpdateProperties(
-        FrameworkElement const& view,
-        IJSValueReader const& propertyMapReader) noexcept {
-        auto control = view.as<winrt::ContentPresenter>();
-        auto content = control.Content();
-        auto webView = content.as<mux::WebView2>();
-        const JSValueObject& propertyMap = JSValueObject::ReadFrom(propertyMapReader);
+	void ReactWebView2Manager::UpdateProperties(
+		FrameworkElement const& view,
+		IJSValueReader const& propertyMapReader) noexcept {
+		auto control = view.as<winrt::ContentPresenter>();
+		auto content = control.Content();
+		auto webView = content.as<mux::WebView2>();
+		const JSValueObject& propertyMap = JSValueObject::ReadFrom(propertyMapReader);
 
-        for (auto const& pair : propertyMap) {
-            auto const& propertyName = pair.first;
-            auto const& propertyValue = pair.second;
-            if (propertyValue.IsNull()) continue;
+		for (auto const& pair : propertyMap) {
+			auto const& propertyName = pair.first;
+			auto const& propertyValue = pair.second;
+			if (propertyValue.IsNull()) continue;
 
-            if (propertyName == "source") {
-                auto const& srcMap = propertyValue.AsObject();
-                auto reactWebView2 = view.as<winrt::ReactNativeWebView::ReactWebView2>();
-                std::string const fileScheme = "file://";
-                if (srcMap.find("uri") != srcMap.end()) {
-                    auto uriString = srcMap.at("uri").AsString();
-                    if (uriString.length() == 0) {
-                        continue;
-                    }
+			if (propertyName == "messagingEnabled") {
+				auto messagingEnabled = propertyValue.To<bool>();
+				auto reactWebView2 = view.as<ReactNativeWebView::ReactWebView2>();
+				reactWebView2.MessagingEnabled(messagingEnabled);
+			}
+			else if (propertyName == "injectedJavaScript")
+			{
+				auto injectedJavascript = propertyValue.AsString();
+				auto reactWebView2 = view.as<ReactNativeWebView::ReactWebView2>();
+				reactWebView2.InjectedJavascript(to_hstring(injectedJavascript));
+			}
+			else if (propertyName == "linkHandlingEnabled") {
+				auto linkHandlingEnabled = propertyValue.To<bool>();
+				auto reactWebView2 = view.as<ReactNativeWebView::ReactWebView2>();
+				reactWebView2.LinkHandlingEnabled(linkHandlingEnabled);
+			}
+			else if (propertyName == "virtualHostNameToFolderMappings") {
+				auto const& mappings = propertyValue.AsObject();
+				auto reactWebView2 = view.as<ReactNativeWebView::ReactWebView2>();
+				reactWebView2.SetVirtualHostNameToFolderMappings(mappings);
+			}
+		}
 
-                    bool isPackagerAsset = false;
-                    if (srcMap.find("__packager_asset") != srcMap.end()) {
-                        isPackagerAsset = srcMap.at("__packager_asset").AsBoolean();
-                    }
-                    if (isPackagerAsset && uriString.find(fileScheme) == 0) {
-                        auto bundleRootPath = winrt::to_string(ReactNativeHost().InstanceSettings().BundleRootPath());
-                        uriString.replace(0, std::size(fileScheme), bundleRootPath.empty() ? "ms-appx-web:///Bundle/" : bundleRootPath);
-                    }
-                    if (uriString.find("ms-appdata://") == 0 || uriString.find("ms-appx-web://") == 0) {
-                        reactWebView2.NavigateToHtml(to_hstring(uriString));
-                    } else {
-                        reactWebView2.NavigateWithWebResourceRequest(MakeJSValueTreeReader(JSValue(srcMap.Copy())));
-                    }
-                }
-                else if (srcMap.find("html") != srcMap.end()) {
-                    auto htmlString = srcMap.at("html").AsString();
-                    reactWebView2.NavigateToHtml(to_hstring(htmlString));
-                }
-            }
-            else if (propertyName == "messagingEnabled") {
-                auto messagingEnabled = propertyValue.To<bool>();
-                auto reactWebView2 = view.as<ReactNativeWebView::ReactWebView2>();
-                reactWebView2.MessagingEnabled(messagingEnabled);
-            }
-            else if (propertyName == "injectedJavaScript")
-            {
-                auto injectedJavascript = propertyValue.AsString();
-                auto reactWebView2 = view.as<ReactNativeWebView::ReactWebView2>();
-                reactWebView2.InjectedJavascript(to_hstring(injectedJavascript));
-            }
-            else if (propertyName == "linkHandlingEnabled") {
-                auto linkHandlingEnabled = propertyValue.To<bool>();
-                auto reactWebView2 = view.as<ReactNativeWebView::ReactWebView2>();
-                reactWebView2.LinkHandlingEnabled(linkHandlingEnabled);
-            }
-            else if (propertyName == "virtualHostNameToFolderMappings") {
-                auto const& mappings = propertyValue.AsObject();
-                reactWebView2.SetVirtualHostNameToFolderMappings(mappings);
-            }
-        }
-    }
+		// As the "source" prop may trigger a navigation, and prior props may set up state necessary for that navigation,
+		// we handle it after all other props.
+		if (&propertyMap.find("source") != &propertyMap.end()) {
+			auto const& srcMap = propertyMap.at("source").AsObject();
+			if (srcMap.empty()) {
+				return;
+			}
+
+			auto reactWebView2 = view.as<winrt::ReactNativeWebView::ReactWebView2>();
+			std::string const fileScheme = "file://";
+			if (srcMap.find("uri") != srcMap.end()) {
+				auto uriString = srcMap.at("uri").AsString();
+				if (uriString.length() == 0) {
+					return;
+				}
+
+				bool isPackagerAsset = false;
+				if (srcMap.find("__packager_asset") != srcMap.end()) {
+					isPackagerAsset = srcMap.at("__packager_asset").AsBoolean();
+				}
+				if (isPackagerAsset && uriString.find(fileScheme) == 0) {
+					auto bundleRootPath = winrt::to_string(ReactNativeHost().InstanceSettings().BundleRootPath());
+					uriString.replace(0, std::size(fileScheme), bundleRootPath.empty() ? "ms-appx-web:///Bundle/" : bundleRootPath);
+				}
+				if (uriString.find("ms-appdata://") == 0 || uriString.find("ms-appx-web://") == 0) {
+					reactWebView2.NavigateToHtml(to_hstring(uriString));
+				}
+				else {
+					reactWebView2.NavigateWithWebResourceRequest(MakeJSValueTreeReader(JSValue(srcMap.Copy())));
+				}
+			}
+			else if (srcMap.find("html") != srcMap.end()) {
+				auto htmlString = srcMap.at("html").AsString();
+				reactWebView2.NavigateToHtml(to_hstring(htmlString));
+			}
+		}
+	}
 
     // IViewManagerWithExportedEventTypeConstants
     ConstantProviderDelegate ReactWebView2Manager::ExportedCustomBubblingEventTypeConstants() noexcept {
