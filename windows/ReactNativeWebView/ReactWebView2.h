@@ -26,12 +26,6 @@ namespace winrt::ReactNativeWebView::implementation {
         void InjectedJavascript(winrt::hstring const& injectedJavascript) noexcept;
         winrt::hstring InjectedJavascript() const noexcept;
         void SetVirtualHostNameToFolderMappings(Microsoft::ReactNative::JSValueObject const& mappings) noexcept;
-        void SetVirtualHostNameToFolderMapping(
-            winrt::hstring const& hostName,
-            winrt::hstring const& folderPath,
-            winrt::Microsoft::Web::WebView2::Core::CoreWebView2HostResourceAccessKind const& accessKind
-        ) noexcept;
-        void ClearVirtualHostNameToFolderMapping(winrt::hstring const& hostName) noexcept;
         void NavigateToHtml(winrt::hstring const& html);
         winrt::fire_and_forget NavigateWithWebResourceRequest(Microsoft::ReactNative::IJSValueReader const& source);
         ~ReactWebView2();
@@ -40,6 +34,7 @@ namespace winrt::ReactNativeWebView::implementation {
         winrt::hstring m_navigateToHtml = L"";
         winrt::Microsoft::ReactNative::JSValueObject m_request{};
         winrt::Microsoft::ReactNative::JSValueObject m_virtualHostNameToFolderMappings{};
+        bool m_virtualHostNameToFolderMappingsUpToDate{ false };
         bool m_messagingEnabled{ true };
         bool m_linkHandlingEnabled{ true };
         winrt::hstring m_injectedJavascript = L"";
@@ -89,6 +84,8 @@ namespace winrt::ReactNativeWebView::implementation {
         bool Is17763OrHigher();
         void WriteCookiesToWebView2(std::string const& cookies);
         void SetupRequest(Microsoft::ReactNative::JSValueObject const& srcMap, winrt::Microsoft::Web::WebView2::Core::CoreWebView2WebResourceRequest const& request);
+        void ApplyVirtualHostNameToFolderMappings() noexcept;
+        void PreNavigation() noexcept;
     };
 } // namespace winrt::ReactNativeWebView2::implementation
 

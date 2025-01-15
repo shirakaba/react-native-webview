@@ -212,6 +212,7 @@ namespace winrt::ReactNativeWebView::implementation {
 		RegisterCoreWebView2Events();
 
 		if (m_navigateToHtml != L"") {
+			PreNavigation();
 			m_webView.NavigateToString(m_navigateToHtml);
 			m_navigateToHtml = L"";
 		}
@@ -394,56 +395,19 @@ namespace winrt::ReactNativeWebView::implementation {
 		if (m_webView.CoreWebView2()) {
 			for (auto& pair : m_virtualHostNameToFolderMappings)
 			{
-				ClearVirtualHostNameToFolderMapping(winrt::to_hstring(pair.first));
+				m_webView.CoreWebView2().ClearVirtualHostNameToFolderMapping(winrt::to_hstring(pair.first));
 			}
 		}
 
 		m_virtualHostNameToFolderMappings = std::move(mappings.Copy());
+		m_virtualHostNameToFolderMappingsUpToDate = false;
 
-		for (auto& pair : m_virtualHostNameToFolderMappings)
-		{
-			for (auto& pair : m_virtualHostNameToFolderMappings)
-			{
-				Microsoft::ReactNative::JSValueObject const& value = pair.second.AsObject();
-				std::string folderPath = value.at("folderPath").AsString();
-				auto accessKind = static_cast<winrt::Microsoft::Web::WebView2::Core::CoreWebView2HostResourceAccessKind>(value.at("accessKind").AsUInt8());
-				SetVirtualHostNameToFolderMapping(
-					winrt::to_hstring(pair.first),
-					winrt::to_hstring(folderPath),
-					accessKind
-				);
-			}
-		}
-	}
-
-	void ReactWebView2::SetVirtualHostNameToFolderMapping(
-		winrt::hstring const& hostName,
-		winrt::hstring const& folderPath,
-		winrt::Microsoft::Web::WebView2::Core::CoreWebView2HostResourceAccessKind const& accessKind
-	) noexcept {
-		if (!m_webView.CoreWebView2())
-		{
-			return;
-		}
-
-		m_webView.CoreWebView2().SetVirtualHostNameToFolderMapping(
-			hostName,
-			folderPath,
-			winrt::Microsoft::Web::WebView2::Core::CoreWebView2HostResourceAccessKind::Allow
-		);
-	}
-
-	void ReactWebView2::ClearVirtualHostNameToFolderMapping(winrt::hstring const& hostName) noexcept {
-		if (!m_webView.CoreWebView2())
-		{
-			return;
-		}
-
-		m_webView.CoreWebView2().ClearVirtualHostNameToFolderMapping(hostName);
+		ApplyVirtualHostNameToFolderMappings();
 	}
 
 	void ReactWebView2::NavigateToHtml(winrt::hstring const& html) {
 		if (m_webView.CoreWebView2()) {
+			PreNavigation();
 			m_webView.NavigateToString(html);
 		}
 		else {
@@ -459,6 +423,7 @@ namespace winrt::ReactNativeWebView::implementation {
 		assert(m_webView.CoreWebView2());
 		if (m_webView.CoreWebView2())
 		{
+			PreNavigation();
 			auto uri = winrt::Uri(winrt::to_hstring(m_request.at("uri").AsString()));
 			auto method = (m_request.find("method") != m_request.end()) ? m_request.at("method").AsString() : "GET";
 			auto webResourceRequest = m_webView.CoreWebView2().Environment().CreateWebResourceRequest(
@@ -521,6 +486,34 @@ namespace winrt::ReactNativeWebView::implementation {
 				}
 			}
 		}
+	}
+
+	void ReactWebView2::ApplyVirtualHostNameToFolderMappings() noexcept {
+		if (m_virtualHostNameToFolderMappingsUpToDate) {
+			return;
+		}
+
+		if (!m_webView.CoreWebView2()) {
+			return;
+		}
+
+		for (auto& pair : m_virtualHostNameToFolderMappings)
+		{
+			Microsoft::ReactNative::JSValueObject const& value = pair.second.AsObject();
+			std::string folderPath = value.at("folderPath").AsString();
+			auto accessKind = static_cast<winrt::Microsoft::Web::WebView2::Core::CoreWebView2HostResourceAccessKind>(value.at("accessKind").AsUInt8());
+			m_webView.CoreWebView2().SetVirtualHostNameToFolderMapping(
+				winrt::to_hstring(pair.first),
+				winrt::to_hstring(folderPath),
+				accessKind
+			);
+		}
+
+		m_virtualHostNameToFolderMappingsUpToDate = true;
+	}
+
+	void ReactWebView2::PreNavigation() noexcept {
+		ApplyVirtualHostNameToFolderMappings();
 	}
 } // namespace winrt::ReactNativeWebView::implementation
 
