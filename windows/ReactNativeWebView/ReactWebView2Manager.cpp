@@ -51,6 +51,7 @@ namespace winrt::ReactNativeWebView::implementation {
         nativeProps.Insert(L"messagingEnabled", ViewManagerPropertyType::Boolean);
         nativeProps.Insert(L"injectedJavaScript", ViewManagerPropertyType::String);
         nativeProps.Insert(L"linkHandlingEnabled", ViewManagerPropertyType::String);
+        nativeProps.Insert(L"virtualHostNameToFolderMappings", ViewManagerPropertyType::Map);
         return nativeProps.GetView();
     }
 
@@ -111,6 +112,10 @@ namespace winrt::ReactNativeWebView::implementation {
                 auto linkHandlingEnabled = propertyValue.To<bool>();
                 auto reactWebView2 = view.as<ReactNativeWebView::ReactWebView2>();
                 reactWebView2.LinkHandlingEnabled(linkHandlingEnabled);
+            }
+            else if (propertyName == "virtualHostNameToFolderMappings") {
+                auto const& mappings = propertyValue.AsObject();
+                reactWebView2.SetVirtualHostNameToFolderMappings(mappings);
             }
         }
     }
