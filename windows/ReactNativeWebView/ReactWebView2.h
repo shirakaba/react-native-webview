@@ -25,6 +25,13 @@ namespace winrt::ReactNativeWebView::implementation {
         Microsoft::ReactNative::JSValueObject WebResourceRequestSource() const noexcept;
         void InjectedJavascript(winrt::hstring const& injectedJavascript) noexcept;
         winrt::hstring InjectedJavascript() const noexcept;
+        void SetVirtualHostNameToFolderMappings(Microsoft::ReactNative::JSValueObject const& mappings) noexcept;
+        void SetVirtualHostNameToFolderMapping(
+            winrt::hstring const& hostName,
+            winrt::hstring const& folderPath,
+            winrt::Microsoft::Web::WebView2::Core::CoreWebView2HostResourceAccessKind const& accessKind
+        ) noexcept;
+        void ClearVirtualHostNameToFolderMapping(winrt::hstring const& hostName) noexcept;
         void NavigateToHtml(winrt::hstring const& html);
         winrt::fire_and_forget NavigateWithWebResourceRequest(Microsoft::ReactNative::IJSValueReader const& source);
         ~ReactWebView2();
@@ -32,6 +39,7 @@ namespace winrt::ReactNativeWebView::implementation {
     private:
         winrt::hstring m_navigateToHtml = L"";
         winrt::Microsoft::ReactNative::JSValueObject m_request{};
+        winrt::Microsoft::ReactNative::JSValueObject m_virtualHostNameToFolderMappings{};
         bool m_messagingEnabled{ true };
         bool m_linkHandlingEnabled{ true };
         winrt::hstring m_injectedJavascript = L"";
