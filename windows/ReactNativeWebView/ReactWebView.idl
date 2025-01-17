@@ -26,6 +26,7 @@ namespace ReactNativeWebView{
         String InjectedJavascript;
         Boolean MessagingEnabled;
         Boolean LinkHandlingEnabled;
+        void SetVirtualHostNameToFolderMappings(Microsoft.ReactNative.JSValueObject mappings);
     };
 #endif
 } // namespace ReactNativeWebView
